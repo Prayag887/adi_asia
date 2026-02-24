@@ -1,0 +1,339 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 45 20% 96%;
+    --foreground: 220 30% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 30% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 30% 15%;
+    --primary: 220 50% 13%;
+    --primary-foreground: 45 20% 96%;
+    --secondary: 180 35% 18%;
+    --secondary-foreground: 45 20% 96%;
+    --muted: 40 15% 90%;
+    --muted-foreground: 220 15% 35%;
+    --accent: 35 30% 55%;
+    --accent-foreground: 220 30% 13%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 35 30% 55%;
+    --radius: 0.5rem;
+    --sidebar-background: 45 20% 96%;
+    --sidebar-foreground: 220 30% 15%;
+    --sidebar-primary: 220 50% 13%;
+    --sidebar-primary-foreground: 45 20% 96%;
+    --sidebar-accent: 40 15% 90%;
+    --sidebar-accent-foreground: 220 30% 15%;
+    --sidebar-border: 40 15% 88%;
+    --sidebar-ring: 35 30% 55%;
+
+    /* ADI Custom Properties - Premium Dark Palette */
+    --adi-blue: #0f1e33;
+    --adi-blue-dark: #0a1525;
+    --adi-blue-light: #1a2942;
+    --adi-ivory: #f8f6f1;
+    --adi-gold: #b8946a;
+    --adi-gold-light: #c9a87a;
+    --adi-gold-dark: #a08055;
+    --adi-slate: #4a5568;
+    --adi-teal: #1e4040;
+    --adi-sage: #6b7a5e;
+    --adi-sand: #e8e4dc;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-ivory text-slate-custom antialiased;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.7;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+}
+
+@layer components {
+
+  /* Section Labels — Cinzel for stately Roman-capital authority */
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: #9a7b52;
+    font-weight: 500;
+  }
+
+  /* Section Titles — Cormorant Garamond, slightly lighter for gravitas */
+  .section-title {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: clamp(36px, 5vw, 52px);
+    font-weight: 500;
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    color: #0f1e33;
+  }
+
+  /* Body Text — EB Garamond, scholarly and readable */
+  .body-text {
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+    color: #4a5568;
+  }
+
+  /* Card Styles - Premium */
+  .adi-card {
+    @apply bg-white rounded-lg p-10 transition-all duration-300;
+    border: 1px solid rgba(15, 30, 51, 0.06);
+    box-shadow: 0 4px 24px rgba(15, 30, 51, 0.06);
+  }
+
+  .adi-card:hover {
+    @apply -translate-y-2;
+    box-shadow: 0 12px 40px rgba(15, 30, 51, 0.12);
+    border-color: rgba(184, 148, 106, 0.15);
+  }
+
+  /* Glass Card (for dark sections) */
+  .glass-card {
+    @apply rounded-xl p-12 transition-all duration-300;
+    background: rgba(248, 246, 241, 0.04);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(248, 246, 241, 0.08);
+  }
+
+  .glass-card:hover {
+    @apply scale-[1.02];
+    border-color: rgba(184, 148, 106, 0.3);
+    background: rgba(248, 246, 241, 0.06);
+  }
+
+  /* Primary Button - Premium */
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-10 py-4 font-inter font-medium rounded-md transition-all duration-300;
+    background: linear-gradient(135deg, #b8946a 0%, #a08055 100%);
+    color: white;
+    box-shadow: 0 4px 16px rgba(184, 148, 106, 0.35);
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #c9a87a 0%, #b8946a 100%);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 24px rgba(184, 148, 106, 0.45);
+  }
+
+  /* Secondary Button */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-10 py-4 border-2 font-inter font-medium rounded-md transition-all duration-300;
+    border-color: rgba(248, 246, 241, 0.4);
+    color: #f8f6f1;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(248, 246, 241, 0.95);
+    color: #0f1e33;
+    border-color: rgba(248, 246, 241, 0.95);
+    transform: translateY(-2px);
+  }
+
+  /* Outline Button (for dark backgrounds) */
+  .btn-outline-gold {
+    @apply inline-flex items-center justify-center px-10 py-4 border-2 font-inter font-medium rounded-md transition-all duration-300;
+    border-color: #b8946a;
+    color: #b8946a;
+  }
+
+  .btn-outline-gold:hover {
+    background: #b8946a;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(184, 148, 106, 0.35);
+  }
+
+  /* Subtle texture background */
+  .texture-bg {
+    position: relative;
+  }
+
+  .texture-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.015;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Premium gradient backgrounds */
+  .gradient-premium {
+    background: linear-gradient(160deg, #0f1e33 0%, #1a2942 40%, #152238 100%);
+  }
+
+  .gradient-asgpp {
+    background: linear-gradient(160deg, #1e4040 0%, #0f1e33 60%, #0a1525 100%);
+  }
+}
+
+@layer utilities {
+
+  /* Scroll Animation Utilities */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .animate-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .animate-on-scroll-left {
+    opacity: 0;
+    transform: translateX(-60px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+  }
+
+  .animate-on-scroll-left.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .animate-on-scroll-right {
+    opacity: 0;
+    transform: translateX(60px);
+    transition: opacity 1s ease-out, transform 1s ease-out;
+  }
+
+  .animate-on-scroll-right.is-visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .animate-on-scroll-scale {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+  }
+
+  .animate-on-scroll-scale.is-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Stagger Children */
+  .stagger-children>* {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .stagger-children.is-visible>*:nth-child(1) {
+    animation: fade-in-up 0.8s ease-out 0s forwards;
+  }
+
+  .stagger-children.is-visible>*:nth-child(2) {
+    animation: fade-in-up 0.8s ease-out 0.15s forwards;
+  }
+
+  .stagger-children.is-visible>*:nth-child(3) {
+    animation: fade-in-up 0.8s ease-out 0.3s forwards;
+  }
+
+  .stagger-children.is-visible>*:nth-child(4) {
+    animation: fade-in-up 0.8s ease-out 0.45s forwards;
+  }
+
+  .stagger-children.is-visible>*:nth-child(5) {
+    animation: fade-in-up 0.8s ease-out 0.6s forwards;
+  }
+
+  .stagger-children.is-visible>*:nth-child(6) {
+    animation: fade-in-up 0.8s ease-out 0.75s forwards;
+  }
+
+  /* Text Shadow for readability */
+  .text-shadow {
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+  }
+
+  /* Gold text enhancement */
+  .text-gold-premium {
+    color: #9a7b52;
+    font-weight: 500;
+  }
+
+  /* Reduced Motion */
+  @media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+
+    .animate-on-scroll,
+    .animate-on-scroll-left,
+    .animate-on-scroll-right,
+    .animate-on-scroll-scale {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+/* Custom Scrollbar - Premium */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8f6f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0f1e33;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #1a2942;
+}
+
+/* Selection */
+::selection {
+  background: #b8946a;
+  color: white;
+}
