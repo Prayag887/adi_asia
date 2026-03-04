@@ -62,10 +62,10 @@ function Navigation() {
               <img
                 src="/src/assets/adi-logo.png"
                 alt="ADI Logo"
-                className={`w-auto object-contain transition-all duration-700 origin-left ${isScrolled ? 'h-12 sm:h-14 lg:h-16 scale-95' : 'h-16 sm:h-20 lg:h-24 scale-100'
+                className={`w-auto object-contain transition-all duration-700 origin-left ${isScrolled ? 'h-10 sm:h-14 lg:h-16 scale-95' : 'h-12 sm:h-20 lg:h-24 scale-100'
                   }`}
               />
-              <span className={`font-garamond text-[#f8f6f1] text-base tracking-wide transition-all duration-500 hidden sm:block ${isScrolled ? 'opacity-90' : 'opacity-100'
+              <span className={`font-garamond text-[#f8f6f1] text-sm sm:text-base tracking-wide transition-all duration-500 ${isScrolled ? 'opacity-90' : 'opacity-100'
                 }`}>
                 Asia Dialogue Initiative
               </span>
@@ -116,7 +116,7 @@ function Navigation() {
           }`}
       >
         <div
-          className="absolute inset-0 bg-[#0f1e33]/98 backdrop-blur-lg"
+          className="absolute inset-0 bg-[#0f1e33]"
           onClick={() => setIsMobileMenuOpen(false)}
         />
         <div className="relative h-full flex flex-col items-center justify-center gap-8">

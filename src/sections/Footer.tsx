@@ -140,7 +140,7 @@ export default function Footer() {
               className="font-inter text-sm text-center sm:text-left"
               style={{ color: 'rgba(248, 246, 241, 0.4)' }}
             >
-              &copy; {new Date().getFullYear()} Asia Dialogue Initiative. All rights reserved.
+              &copy; 2023 Asia Dialogue Initiative. All rights reserved.
             </p>
             <p
               className="font-inter text-sm text-center sm:text-right"

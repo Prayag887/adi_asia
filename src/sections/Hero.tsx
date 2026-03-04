@@ -197,7 +197,7 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0f1e33]/80" />
 
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 xl:px-12">
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-[100svh] pt-28 pb-12 px-4 sm:px-6 lg:px-8 xl:px-12">
         {/* Main Content */}
         <div className="text-center max-w-4xl mx-auto">
           {/* Motto */}
