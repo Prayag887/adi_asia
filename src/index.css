@@ -2,6 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Keep this after Tailwind utilities: it intentionally overrides font-* utility
+   classes across the full site, including the fixed navigation. */
+html[data-site-font] body,
+html[data-site-font] body * {
+  font-family: var(--site-font) !important;
+}
+
+.inline-editor-text {
+  outline: 1px dashed rgba(184, 148, 106, 0.8);
+  outline-offset: 3px;
+  border-radius: 2px;
+  cursor: text;
+}
+
+.inline-editor-text:focus {
+  outline: 2px solid #b8946a;
+  background: rgba(184, 148, 106, 0.12);
+}
+
+
 @layer base {
   :root {
     --background: 45 20% 96%;

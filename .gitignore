@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local PocketBase runtime data and downloaded executable
+/pocketbase/pb_data/
+/pocketbase/pocketbase
+/pocketbase/CHANGELOG.md
+/pocketbase/LICENSE.md
+/pocketbase/.local-credentials
+.gstack/
+.dev.vars
+wrangler.toml

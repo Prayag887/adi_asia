@@ -1,4 +1,35 @@
-# React + TypeScript + Vite
+# Asia Dialogue Initiative
+
+ADI is a Vite/React website with a private editorial experience, Supabase authentication/database, and Cloudflare R2 blog-image storage.
+
+## Local product
+
+- Public site: `http://127.0.0.1:5173`
+- Editor workflow: sign in from the site, select **Edit site**, edit text directly in the live layout, and use **Save changes** at the bottom of the page.
+- Blog workflow: sign in, select **Write a post**, upload a cover image, and publish. Published posts are public and open in a dedicated reader screen.
+
+## Supabase setup
+
+1. Create a Supabase project.
+2. Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor.
+3. Disable public user registration in **Authentication → Providers → Email**. Create editor accounts from the Supabase dashboard.
+4. Copy `.env.example` to `.env` and add the project URL and public anon key.
+
+Row Level Security permits public reads, while all content changes require an authenticated editor. Blog authors can only modify their own posts.
+
+## Cloudflare Pages and R2
+
+1. Create an R2 Standard bucket named `adi-blog-images` and enable public access through a custom domain such as `images.example.com`.
+2. Copy `wrangler.toml.example` to `wrangler.toml` and update the project and bucket names.
+3. In Cloudflare Pages, bind the R2 bucket as `BLOG_IMAGES`.
+4. Add `PUBLIC_R2_URL`, `SUPABASE_URL`, and `SUPABASE_ANON_KEY` as Pages environment variables.
+5. Deploy with build command `npm run build` and output directory `dist`.
+
+The upload endpoint in `functions/api/blog-images.ts` verifies the Supabase session, accepts only JPG/PNG/WebP files up to 5 MB, and writes them to R2 without exposing storage credentials to the browser.
+
+For local frontend development, run `npm start`. Image uploads require Cloudflare Pages local development or a deployed Pages Function. The previous `pocketbase/` directory is retained only as a local data/schema backup during migration and is no longer used by the application.
+
+## React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

@@ -1,4 +1,5 @@
 import { useScrollAnimation } from '@/hooks/useScrollAnimation';
+import { R2_ASSET_URLS } from '@/lib/r2';
 
 const quickLinks = [
   { label: 'About ADI', href: '#about' },
@@ -47,7 +48,7 @@ export default function Footer() {
             {/* Logo */}
             <div className="flex items-center gap-3 mb-3">
               <img
-                src="/src/assets/adi-logo.png"
+                src={R2_ASSET_URLS.logo || '/src/assets/adi-logo.png'}
                 alt="ADI Logo"
                 className="h-36 w-auto object-contain"
               />
