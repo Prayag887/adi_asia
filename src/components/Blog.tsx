@@ -175,8 +175,8 @@ export default function Blog({ canWrite, onOpenPost, postToEdit, onEdited }: { c
               </div>
             )}
           </article>)}</div>
-          {posts.length > 3 && !showAll && <div className="mt-14 text-center"><button onClick={() => setShowAll(true)} className="rounded border border-[#0f1e33] px-7 py-3 font-inter text-sm font-medium text-[#0f1e33] transition-colors hover:bg-[#0f1e33] hover:text-[#f8f6f1]\">Show more</button></div>}
-        </> : <div className="py-16 text-center"><PenLine className="mx-auto mb-4 h-8 w-8 text-[#b8946a]" /><p className="font-cormorant text-3xl text-[#0f1e33]\">Stories and insights are on their way.</p>{canWrite && <button onClick={() => { setEditingPost(null); setWriting(true); }} className="mt-5 font-inter text-sm text-[#9a7b52] underline\">Write the first post</button>}</div>}
+          {posts.length > 3 && !showAll && <div className="mt-14 text-center"><button onClick={() => setShowAll(true)} className="rounded border border-[#0f1e33] px-7 py-3 font-inter text-sm font-medium text-[#0f1e33] transition-colors hover:bg-[#0f1e33] hover:text-white">Show more</button></div>}
+        </> : <div className="py-16 text-center"><PenLine className="mx-auto mb-4 h-8 w-8 text-[#b8946a]" /><p className="font-cormorant text-3xl text-[#0f1e33]">Stories and insights are on their way.</p>{canWrite && <button onClick={() => { setEditingPost(null); setWriting(true); }} className="mt-5 font-inter text-sm text-[#9a7b52] underline">Write the first post</button>}</div>}
     </div>
   </section>;
 }
