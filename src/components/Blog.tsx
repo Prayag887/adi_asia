@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { ArrowLeft, ArrowRight, ImagePlus, LoaderCircle, PenLine, Pencil, Plus, Trash2 } from 'lucide-react';
 import { createPost, deletePost, getPublishedPosts, updatePost, uploadBlogImage } from '@/lib/supabase';
@@ -36,15 +36,18 @@ function PostForm({ post, saving, error, onCancel, onSubmit }: { post?: Post; sa
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const title = String(data.get('title') || '').trim();
-    const body = String(data.get('body') || '').trim();
-    // Attach cover file to the form event so the parent can access it
-    (event as any)._coverFile = selectedCover;
-    (event as any)._title = title;
-    (event as any)._body = body;
     onSubmit(event);
   };
+
+  // Store selected cover in a hidden input so the parent can read it from FormData
+  const coverInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (coverInputRef.current && selectedCover) {
+      const dt = new DataTransfer();
+      dt.items.add(selectedCover);
+      coverInputRef.current.files = dt.files;
+    }
+  }, [selectedCover]);
 
   return (
     <form onSubmit={handleSubmit} className="rounded border border-[#b8946a]/30 bg-white p-6 shadow-sm">
@@ -57,6 +60,7 @@ function PostForm({ post, saving, error, onCancel, onSubmit }: { post?: Post; sa
         )}
         <input name="cover" type="file" accept="image/png,image/jpeg,image/webp" onChange={event => selectCover(event.target.files?.[0])} className="sr-only" />
       </label>
+      <input ref={coverInputRef} name="cover_file" type="file" className="hidden" />
       <textarea required name="body" defaultValue={post?.body} placeholder="Start writing…" className="min-h-80 w-full resize-y font-inter leading-relaxed text-[#334155] outline-none" />
       {error && <p className="mt-4 font-inter text-sm text-red-700">{error}</p>}
       <div className="mt-5 flex justify-end gap-3">
@@ -91,9 +95,9 @@ export function BlogReader({ post, canWrite, onBack, onEdit }: { post: Post; can
         )}
       </div>
       <header className="mx-auto mb-12 max-w-3xl text-center">
-        <p className="font-inter text-xs uppercase tracking-[.2em] text-[#9a7b52]\">{formatDate(post.publishedAt)}</p>
+        <p className="font-inter text-xs uppercase tracking-[.2em] text-[#9a7b52]">{formatDate(post.publishedAt)}</p>
         <h1 className="mt-5 font-cormorant text-5xl font-semibold leading-[1.05] text-[#0f1e33] sm:text-7xl">{post.title}</h1>
-        {post.excerpt && <p className="mx-auto mt-6 max-w-2xl font-inter text-lg leading-relaxed text-[#64748b]\">{post.excerpt}</p>}
+        {post.excerpt && <p className="mx-auto mt-6 max-w-2xl font-inter text-lg leading-relaxed text-[#64748b]">{post.excerpt}</p>}
       </header>
       <PostImage post={post} className="aspect-[16/8] w-full rounded-sm object-cover" />
       <div className="mx-auto mt-12 max-w-2xl whitespace-pre-wrap font-inter text-[17px] leading-8 text-[#334155] sm:text-lg">{post.body}</div>
@@ -117,7 +121,6 @@ export default function Blog({ canWrite, onOpenPost, postToEdit, onEdited }: { c
   };
   useEffect(() => { load(); }, []);
 
-  // Auto-open edit form when postToEdit comes from the reader
   useEffect(() => {
     if (postToEdit) {
       setEditingPost(postToEdit);
@@ -127,14 +130,16 @@ export default function Blog({ canWrite, onOpenPost, postToEdit, onEdited }: { c
   }, [postToEdit, onEdited]);
 
   const publish = async (event: FormEvent<HTMLFormElement>) => {
-    const customEvent = event as any;
-    const title = customEvent._title;
-    const body = customEvent._body;
-    const coverFile = customEvent._coverFile as File | null;
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const title = String(data.get('title') || '').trim();
+    const body = String(data.get('body') || '').trim();
+    const coverFile = data.get('cover_file') as File | null;
+
     setSaving(true);
     setPublishError('');
     try {
-      const coverUrl = coverFile ? await uploadBlogImage(coverFile) : undefined;
+      const coverUrl = coverFile && coverFile.size > 0 ? await uploadBlogImage(coverFile) : undefined;
       if (editingPost) {
         await updatePost(editingPost.id, { title, body, cover: coverUrl });
       } else {
@@ -158,15 +163,15 @@ export default function Blog({ canWrite, onOpenPost, postToEdit, onEdited }: { c
 
   return <section id="blog" className="scroll-mt-20 bg-[#faf9f6] py-24 sm:py-28">
     <div className="mx-auto max-w-6xl px-6 sm:px-8">
-        <div className="mb-14 flex items-end justify-between gap-4 border-b border-[#b8946a]/25 pb-8"><div><p className="section-label">Perspectives</p><h1 className="mt-3 font-cormorant text-5xl font-semibold text-[#0f1e33] sm:text-6xl">ADI Journal</h1></div>{canWrite && !writing && <button onClick={() => { setEditingPost(null); setWriting(true); }} className="inline-flex items-center gap-2 rounded bg-[#0f1e33] px-4 py-2 font-inter text-sm text-[#f8f6f1] hover:bg-[#1a2942]\"><Plus className="h-4 w-4" />Write a post</button>}</div>
+        <div className="mb-14 flex items-end justify-between gap-4 border-b border-[#b8946a]/25 pb-8"><div><p className="section-label">Perspectives</p><h1 className="mt-3 font-cormorant text-5xl font-semibold text-[#0f1e33] sm:text-6xl">ADI Journal</h1></div>{canWrite && !writing && <button onClick={() => { setEditingPost(null); setWriting(true); }} className="inline-flex items-center gap-2 rounded bg-[#0f1e33] px-4 py-2 font-inter text-sm text-[#f8f6f1] hover:bg-[#1a2942]"><Plus className="h-4 w-4" />Write a post</button>}</div>
         {writing ? <PostForm post={editingPost || undefined} saving={saving} error={publishError} onCancel={() => { setWriting(false); setEditingPost(null); setPublishError(''); }} onSubmit={publish} /> : loading ? <LoaderCircle className="h-6 w-6 animate-spin text-[#b8946a]" /> : posts.length ? <>
           <div className="grid gap-x-7 gap-y-12 md:grid-cols-2 lg:grid-cols-3">{posts.slice(0, showAll ? posts.length : 3).map(post => <article key={post.id} className="group relative">
             <button onClick={() => onOpenPost(post)} className="block w-full text-left" aria-label={`Read ${post.title}`}>
               <PostImage post={post} className="aspect-[16/10] w-full rounded-sm object-cover transition-transform duration-500 group-hover:scale-[1.015]" />
-              <p className="mt-5 font-inter text-[11px] uppercase tracking-[.18em] text-[#9a7b52]\">{formatDate(post.publishedAt)}</p>
-              <h2 className="mt-2 font-cormorant text-3xl font-semibold leading-tight text-[#0f1e33] transition-colors group-hover:text-[#9a7b52]\">{post.title}</h2>
-              {post.excerpt && <p className="mt-3 line-clamp-3 font-inter text-sm leading-6 text-[#64748b]\">{post.excerpt}</p>}
-              <span className="mt-4 inline-flex items-center gap-2 font-inter text-xs font-medium uppercase tracking-[.12em] text-[#0f1e33]\">Read story <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" /></span>
+              <p className="mt-5 font-inter text-[11px] uppercase tracking-[.18em] text-[#9a7b52]">{formatDate(post.publishedAt)}</p>
+              <h2 className="mt-2 font-cormorant text-3xl font-semibold leading-tight text-[#0f1e33] transition-colors group-hover:text-[#9a7b52]">{post.title}</h2>
+              {post.excerpt && <p className="mt-3 line-clamp-3 font-inter text-sm leading-6 text-[#64748b]">{post.excerpt}</p>}
+              <span className="mt-4 inline-flex items-center gap-2 font-inter text-xs font-medium uppercase tracking-[.12em] text-[#0f1e33]">Read story <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" /></span>
             </button>
             {canWrite && (
               <div className="absolute top-2 right-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
