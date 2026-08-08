@@ -29,7 +29,7 @@ export async function onRequestPost({ request, env }: PagesContext) {
   if (image.size > maxBytes) return Response.json({ error: 'Images must be 5 MB or smaller.' }, { status: 413 });
 
   const extension = image.type === 'image/jpeg' ? 'jpg' : image.type.split('/')[1];
-  const key = `blog/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${extension}`;
+  const key = `blog-images/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${extension}`;
   await env.BLOG_IMAGES.put(key, await image.arrayBuffer(), { httpMetadata: { contentType: image.type } });
 
   return Response.json({ url: `${env.PUBLIC_R2_URL.replace(/\/$/, '')}/${key}` });

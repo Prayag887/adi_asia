@@ -4,7 +4,7 @@ pages_build_output_dir = "dist"
 
 [[r2_buckets]]
 binding = "BLOG_IMAGES"
-bucket_name = "adi-blog-images"
+bucket_name = "adi-asia-blog-images"
 
 # Set these as Cloudflare Pages environment variables, not in this file:
 # PUBLIC_R2_URL=https://images.your-domain.com
