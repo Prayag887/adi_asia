@@ -21,7 +21,7 @@ Multi-tenant hosting for small client websites. One Rust server (`server/`) and 
 
 ## Hard rules
 
-1. **Tenant isolation.** Every tenant table has `tenant_id`, and every query filters by it. Use the `Tenant` / `Editor` extractors in `server/src/api`. SQLite has no RLS, so this is the only wall between clients.
+1. **Tenant isolation = one SQLite file per tenant.** Client content (site text, posts, sections, contact messages) lives in `tenants/<slug>.db`, reached only through `state.tenant_db(&tenant)` in handlers that take the `Tenant` / `Editor` extractor. Platform data (tenants, domains, billing, users, sessions, health) lives in the control DB `folio.db`, keyed by `tenant_id`. New client-content tables go in `server/migrations/tenant/`, and platform tables in `server/migrations/control/`.
 2. **ADI must look identical.** `sites/adi` was ported pixel-for-pixel from a React site. Don't restyle it unless asked. Its inline editor derives text keys from DOM position (`src/scripts/editor.ts`), so restructuring section markup orphans saved text edits. Keep the element structure unchanged.
 3. **door2door is off limits.** The VPS (163.223.98.6, SSH port 41447, root) also runs an unrelated production app, `door2door-*` containers. Never touch its containers, Docker network, Caddy config (`/opt/door2door-tenancy`), ports 80/443 or the firewall. Folio lives only in `/opt/folio`, `/srv/folio` and `/srv/sites`.
 4. **Ask before outward-facing actions:** deploys, DNS changes, editing anything on the VPS, and changing passwords. The user approves these one at a time.
@@ -36,7 +36,7 @@ Multi-tenant hosting for small client websites. One Rust server (`server/`) and 
   - `tunnel`: cloudflared.
 - No published ports. Traffic arrives through a Cloudflare Tunnel (`folio`, config in `/opt/folio/cloudflared/config.yml`).
 - `/srv/sites/tenants/<slug>/` holds the uploaded build. `/srv/sites/hosts/<host>` symlinks are managed by the server; don't create them by hand.
-- Database: `/srv/folio/data/folio.db`. Back it up before server deploys (the `/deploy` skill does this).
+- Databases: `/srv/folio/data/folio.db` (control) plus `/srv/folio/data/tenants/<slug>.db` (one per client). Back them **all** up before server deploys (the `/deploy` skill does this).
 - `/opt/folio/.env` has `SERVER_IPS=` (empty) on purpose. In tunnel mode DNS points at Cloudflare, so an IP check would fail. Don't set it back.
 - Cloudflare Email Obfuscation rewrites `mailto:` links in transit. That's expected; visitors see the real address.
 

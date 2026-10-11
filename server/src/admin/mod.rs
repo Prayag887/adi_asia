@@ -270,6 +270,8 @@ async fn create_tenant(_: SuperAdmin, State(state): State<AppState>, Form(f): Fo
         .execute(&mut *tx)
         .await?;
     tx.commit().await?;
+    // Create the tenant's own database file now, so it exists before the first visitor.
+    state.tenants.get(&slug).await?;
     sites::sync_all(&state.db, &state.cfg).await?;
     Ok(back(&tenant_path(id), Ok("Tenant created.".into())))
 }
@@ -355,12 +357,10 @@ async fn tenant_page(
     .fetch_all(&state.db)
     .await?;
 
-    let messages: Vec<MessageRow> = sqlx::query_as(
-        "SELECT name, email, subject, message, created_at FROM contact_messages WHERE tenant_id = ? ORDER BY id DESC LIMIT 25",
-    )
-    .bind(id)
-    .fetch_all(&state.db)
-    .await?;
+    let messages: Vec<MessageRow> =
+        sqlx::query_as("SELECT name, email, subject, message, created_at FROM contact_messages ORDER BY id DESC LIMIT 25")
+            .fetch_all(&state.tenants.get(&t.slug).await?)
+            .await?;
 
     let build_dir = state.cfg.sites_dir.join("tenants").join(&t.slug);
     let build_deployed = tokio::fs::metadata(build_dir.join("index.html")).await.is_ok();
@@ -440,9 +440,14 @@ async fn update_tenant(
 }
 
 async fn delete_tenant(_: SuperAdmin, State(state): State<AppState>, Path(id): Path<i64>) -> AppResult<Response> {
+    let t = load_tenant(&state, id).await?;
     sqlx::query("DELETE FROM tenants WHERE id = ?").bind(id).execute(&state.db).await?;
+    state.tenants.archive(&t.slug).await?;
     sites::sync_all(&state.db, &state.cfg).await?;
-    Ok(back("/admin", Ok("Tenant deleted. Its static build folder was left on disk.".into())))
+    Ok(back(
+        "/admin",
+        Ok("Site deleted. Its database was moved to tenants/deleted/ and its static build was left on disk.".into()),
+    ))
 }
 
 // ---------- domains ----------

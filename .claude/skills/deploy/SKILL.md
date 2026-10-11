@@ -31,10 +31,13 @@ cd server && cargo test && cargo clippy -- -D warnings && docker build -t folio:
 ```
 Static only: no restart, no downtime.
 
-**Server:** back up the database first:
+**Server:** back up every database first (control + one per tenant):
 ```sh
-ssh -p 41447 root@163.223.98.6 'docker run --rm -v /srv/folio/data:/data:z alpine:3 sh -c \
-  "apk add -q sqlite && sqlite3 /data/folio.db \".backup /data/folio.db.bak-$(date +%Y%m%d-%H%M)\""'
+ssh -p 41447 root@163.223.98.6 'docker run --rm -v /srv/folio/data:/data:z alpine:3 sh -c '"'"'
+  apk add -q sqlite; d=/data/backups/$(date +%Y%m%d-%H%M); mkdir -p $d/tenants
+  sqlite3 /data/folio.db ".backup $d/folio.db"
+  for f in /data/tenants/*.db; do [ -e "$f" ] && sqlite3 "$f" ".backup $d/tenants/$(basename $f)"; done
+  ls -R $d'"'"''
 ./scripts/deploy-server.sh          # rebuilds the image on the VPS, recreates only folio-api (~3s API downtime)
 ```
 Then confirm the API container really runs the new image:
@@ -57,4 +60,4 @@ ssh -p 41447 root@163.223.98.6 'cd /opt/folio && docker compose ps && docker com
 ## Rollback
 
 - **Site:** `git checkout <previous-commit> -- sites/<slug>` and redeploy it.
-- **Server:** redeploy the previous commit with `deploy-server.sh`. If a migration broke data, restore `folio.db.bak-*`: stop `folio-api`, copy the backup over `folio.db`, delete `folio.db-wal` and `folio.db-shm`, then start it again.
+- **Server:** redeploy the previous commit with `deploy-server.sh`. If a migration broke data, restore from `/srv/folio/data/backups/<stamp>/`: stop `folio-api`, copy the backed-up files over `folio.db` and `tenants/*.db`, delete the matching `-wal` and `-shm` files, then start it again.

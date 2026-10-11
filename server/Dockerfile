@@ -14,6 +14,7 @@ FROM gcr.io/distroless/cc-debian12:nonroot
 COPY --from=build /src/target/release/folio /usr/local/bin/folio
 COPY --from=build --chown=65532:65532 /out/ /
 ENV DATABASE_URL=sqlite:///data/folio.db \
+    TENANT_DB_DIR=/data/tenants \
     SITES_DIR=/srv/sites \
     UPLOADS_DIR=/srv/uploads \
     LISTEN=0.0.0.0:3000 \

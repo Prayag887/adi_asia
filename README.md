@@ -35,7 +35,8 @@ After creating a site, also open the admin: **New site** with the same slug, the
 ```
 visitor ──► Cloudflare ──tunnel──► folio-web (Caddy) ──► /srv/sites/hosts/<host>/   static files
                                        │
-                                       └── /api, /admin ──► folio-api (Rust) ──► SQLite
+                                       └── /api, /admin ──► folio-api (Rust) ──► folio.db (platform)
+                                                                               tenants/<slug>.db (one per client)
 ```
 
 - The server picks the site from the request's **Host** header. `asiacan.sollari.app` maps to the tenant `adi`.
@@ -58,7 +59,7 @@ In the local admin, create a site whose slug matches the folder (`adi`). It gets
 ## Rules that keep this working
 
 1. **One client, one folder.** Never import across `sites/*`. Shared needs go in `server/`, and shared looks go in `templates/`.
-2. **Every tenant table has `tenant_id`, and every query filters on it.** SQLite has no row-level security, so this rule is what keeps clients' data apart.
+2. **Each client's content lives in its own SQLite file** (`tenants/<slug>.db`). The control database (`folio.db`) holds only platform data: sites, domains, billing, logins.
 3. **Never edit `templates/*` to change a live site.** A site is a copy; change it in `sites/<slug>`.
 4. The VPS also runs **door2door**, an unrelated project. Folio must never touch its containers, network, Caddy config or ports.
 

@@ -21,11 +21,3 @@ ADI is a static Astro site (Tailwind, a little vanilla TypeScript, no UI framewo
 ## Deploying
 
 From the repo root, run `./scripts/deploy-site.sh adi`. It builds the site and uploads `dist/` to `/srv/sites/tenants/adi/` on the VPS, and Caddy serves it from there. Pushing changes under `sites/adi/` to `main` does the same through CI.
-
-## Migrating from Supabase (once)
-
-```sh
-SUPABASE_URL=https://xxxx.supabase.co SUPABASE_ANON_KEY=... folio import-supabase adi
-```
-
-This copies site text, published posts, section visibility and custom sections. Existing cover-image URLs keep working because they point at R2. Editor accounts are re-created in the Folio admin.

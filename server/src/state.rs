@@ -4,15 +4,31 @@ use std::{
     time::{Duration, Instant},
 };
 
-use crate::{config::Config, db::Db, storage::Storage};
+use crate::{
+    config::Config,
+    db::{Db, TenantDbs},
+    error::AppResult,
+    storage::Storage,
+    tenant::Tenant,
+};
 
 #[derive(Clone)]
 pub struct AppState {
+    /// Control database: tenants, domains, billing, logins, sessions, health checks.
     pub db: Db,
+    /// Per-tenant databases: site content, posts, sections, contact messages.
+    pub tenants: Arc<TenantDbs>,
     pub cfg: Arc<Config>,
     pub http: reqwest::Client,
     pub storage: Arc<Storage>,
     pub limiter: Arc<RateLimiter>,
+}
+
+impl AppState {
+    /// The tenant's own database.
+    pub async fn tenant_db(&self, tenant: &Tenant) -> AppResult<Db> {
+        Ok(self.tenants.get(&tenant.slug).await?)
+    }
 }
 
 /// Fixed-window counter kept in memory. Good enough for login and contact-form abuse

@@ -13,7 +13,10 @@ pub struct R2Config {
 
 #[derive(Clone, Debug)]
 pub struct Config {
+    /// Control database (tenants, domains, billing, logins).
     pub database_url: String,
+    /// One SQLite file per tenant lives here: `{tenant_db_dir}/{slug}.db`.
+    pub tenant_db_dir: PathBuf,
     /// Public listener: Caddy proxies `/api/*`, `/admin/*` and unmatched hosts here.
     pub listen: SocketAddr,
     /// Internal listener (Caddy `ask` endpoint). Never expose publicly.
@@ -64,8 +67,10 @@ impl Config {
             _ => None,
         };
 
+        let database_url = var("DATABASE_URL", "sqlite://data/folio.db");
         Ok(Self {
-            database_url: var("DATABASE_URL", "sqlite://data/folio.db"),
+            tenant_db_dir: env::var("TENANT_DB_DIR").map(PathBuf::from).unwrap_or_else(|_| crate::db::default_tenant_dir(&database_url)),
+            database_url,
             listen: var("LISTEN", "127.0.0.1:3000").parse().context("LISTEN")?,
             internal_listen: var("INTERNAL_LISTEN", "127.0.0.1:3001").parse().context("INTERNAL_LISTEN")?,
             admin_host: var("ADMIN_HOST", "admin.localhost").to_lowercase(),

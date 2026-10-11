@@ -1,5 +1,6 @@
-//! JSON API used by tenant sites. Every query is scoped by the tenant resolved from
-//! the Host header, so a site can only ever see its own rows.
+//! JSON API used by tenant sites. The tenant comes from the Host header. Content queries
+//! run against that tenant's own SQLite file (`state.tenant_db`), so a site can only ever
+//! reach its own data. Logins and sessions live in the control database.
 
 use std::{collections::HashMap, time::Duration};
 
@@ -97,9 +98,8 @@ struct ContentRow {
 }
 
 async fn get_content(State(state): State<AppState>, tenant: Tenant) -> AppResult<Json<Vec<ContentRow>>> {
-    let rows = sqlx::query_as("SELECT key, value FROM site_content WHERE tenant_id = ? ORDER BY key")
-        .bind(tenant.id)
-        .fetch_all(&state.db)
+    let rows = sqlx::query_as("SELECT key, value FROM site_content ORDER BY key")
+        .fetch_all(&state.tenant_db(&tenant).await?)
         .await?;
     Ok(Json(rows))
 }
@@ -112,13 +112,9 @@ async fn save_content(
     if changes.len() > 500 || changes.iter().any(|(k, v)| k.len() > 200 || v.len() > 20_000) {
         return Err(bad("Content is too large."));
     }
-    let mut tx = state.db.begin().await?;
+    let mut tx = state.tenant_db(&editor.tenant).await?.begin().await?;
     for (key, value) in changes {
-        sqlx::query(
-            "INSERT INTO site_content (tenant_id, key, value) VALUES (?, ?, ?)
-             ON CONFLICT (tenant_id, key) DO UPDATE SET value = excluded.value",
-        )
-        .bind(editor.tenant.id)
+        sqlx::query("INSERT INTO site_content (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value")
         .bind(key)
         .bind(value)
         .execute(&mut *tx)
@@ -145,10 +141,9 @@ struct PostOut {
 async fn list_posts(State(state): State<AppState>, tenant: Tenant) -> AppResult<Json<Vec<PostOut>>> {
     let rows = sqlx::query_as(
         "SELECT id, title, excerpt, body, published_at, cover_url FROM posts
-         WHERE tenant_id = ? AND published = 1 ORDER BY published_at DESC",
+         WHERE published = 1 ORDER BY published_at DESC",
     )
-    .bind(tenant.id)
-    .fetch_all(&state.db)
+    .fetch_all(&state.tenant_db(&tenant).await?)
     .await?;
     Ok(Json(rows))
 }
@@ -191,18 +186,17 @@ async fn create_post(State(state): State<AppState>, editor: Editor, Json(input):
     }
     let excerpt = input.excerpt.map(|e| excerpt_of(&e)).unwrap_or_else(|| excerpt_of(&input.body));
     sqlx::query(
-        "INSERT INTO posts (id, tenant_id, title, excerpt, body, published, published_at, author_id, cover_url)
-         VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?)",
+        "INSERT INTO posts (id, title, excerpt, body, published, published_at, author_id, cover_url)
+         VALUES (?, ?, ?, ?, 1, ?, ?, ?)",
     )
     .bind(uuid::Uuid::new_v4().to_string())
-    .bind(editor.tenant.id)
     .bind(input.title.trim())
     .bind(excerpt)
     .bind(&input.body)
     .bind(Utc::now().to_rfc3339())
     .bind(editor.user_id)
     .bind(cover)
-    .execute(&state.db)
+    .execute(&state.tenant_db(&editor.tenant).await?)
     .await?;
     Ok(StatusCode::CREATED)
 }
@@ -221,10 +215,9 @@ async fn update_post(
     Path(id): Path<String>,
     Json(input): Json<PostPatch>,
 ) -> AppResult<StatusCode> {
-    let mut tx = state.db.begin().await?;
-    let (title, body): (String, String) = sqlx::query_as("SELECT title, body FROM posts WHERE id = ? AND tenant_id = ?")
+    let mut tx = state.tenant_db(&editor.tenant).await?.begin().await?;
+    let (title, body): (String, String) = sqlx::query_as("SELECT title, body FROM posts WHERE id = ?")
         .bind(&id)
-        .bind(editor.tenant.id)
         .fetch_optional(&mut *tx)
         .await?
         .ok_or(AppError::NotFound)?;
@@ -254,10 +247,9 @@ async fn update_post(
 }
 
 async fn delete_post(State(state): State<AppState>, editor: Editor, Path(id): Path<String>) -> AppResult<StatusCode> {
-    let result = sqlx::query("DELETE FROM posts WHERE id = ? AND tenant_id = ?")
+    let result = sqlx::query("DELETE FROM posts WHERE id = ?")
         .bind(id)
-        .bind(editor.tenant.id)
-        .execute(&state.db)
+        .execute(&state.tenant_db(&editor.tenant).await?)
         .await?;
     if result.rows_affected() == 0 {
         return Err(AppError::NotFound);
@@ -296,9 +288,8 @@ struct SectionRow {
 }
 
 async fn list_sections(State(state): State<AppState>, tenant: Tenant) -> AppResult<Json<Vec<SectionRow>>> {
-    let rows = sqlx::query_as("SELECT section_key, visible FROM section_visibility WHERE tenant_id = ?")
-        .bind(tenant.id)
-        .fetch_all(&state.db)
+    let rows = sqlx::query_as("SELECT section_key, visible FROM section_visibility")
+        .fetch_all(&state.tenant_db(&tenant).await?)
         .await?;
     Ok(Json(rows))
 }
@@ -318,13 +309,12 @@ async fn set_section(
         return Err(bad("Invalid section."));
     }
     sqlx::query(
-        "INSERT INTO section_visibility (tenant_id, section_key, visible) VALUES (?, ?, ?)
-         ON CONFLICT (tenant_id, section_key) DO UPDATE SET visible = excluded.visible",
+        "INSERT INTO section_visibility (section_key, visible) VALUES (?, ?)
+         ON CONFLICT (section_key) DO UPDATE SET visible = excluded.visible",
     )
-    .bind(editor.tenant.id)
     .bind(key)
     .bind(input.visible)
-    .execute(&state.db)
+    .execute(&state.tenant_db(&editor.tenant).await?)
     .await?;
     Ok(StatusCode::NO_CONTENT)
 }
@@ -338,9 +328,8 @@ struct CustomSection {
 }
 
 async fn list_custom_sections(State(state): State<AppState>, tenant: Tenant) -> AppResult<Json<Vec<CustomSection>>> {
-    let rows = sqlx::query_as("SELECT id, title, body, position FROM custom_sections WHERE tenant_id = ? ORDER BY position")
-        .bind(tenant.id)
-        .fetch_all(&state.db)
+    let rows = sqlx::query_as("SELECT id, title, body, position FROM custom_sections ORDER BY position")
+        .fetch_all(&state.tenant_db(&tenant).await?)
         .await?;
     Ok(Json(rows))
 }
@@ -360,22 +349,20 @@ async fn create_custom_section(
     if input.title.trim().is_empty() || input.title.chars().count() > 160 || input.body.len() > 50_000 {
         return Err(bad("Section titles must be 1–160 characters."));
     }
-    sqlx::query("INSERT INTO custom_sections (id, tenant_id, title, body, position) VALUES (?, ?, ?, ?, ?)")
+    sqlx::query("INSERT INTO custom_sections (id, title, body, position) VALUES (?, ?, ?, ?)")
         .bind(uuid::Uuid::new_v4().to_string())
-        .bind(editor.tenant.id)
         .bind(input.title.trim())
         .bind(input.body)
         .bind(input.position)
-        .execute(&state.db)
+        .execute(&state.tenant_db(&editor.tenant).await?)
         .await?;
     Ok(StatusCode::CREATED)
 }
 
 async fn delete_custom_section(State(state): State<AppState>, editor: Editor, Path(id): Path<String>) -> AppResult<StatusCode> {
-    sqlx::query("DELETE FROM custom_sections WHERE id = ? AND tenant_id = ?")
+    sqlx::query("DELETE FROM custom_sections WHERE id = ?")
         .bind(id)
-        .bind(editor.tenant.id)
-        .execute(&state.db)
+        .execute(&state.tenant_db(&editor.tenant).await?)
         .await?;
     Ok(StatusCode::NO_CONTENT)
 }
@@ -401,13 +388,12 @@ async fn contact(State(state): State<AppState>, tenant: Tenant, Json(input): Jso
     if !state.limiter.allow(&format!("contact:{}", tenant.id), 30, Duration::from_secs(3600)) {
         return Err(AppError::TooMany);
     }
-    sqlx::query("INSERT INTO contact_messages (tenant_id, name, email, subject, message) VALUES (?, ?, ?, ?, ?)")
-        .bind(tenant.id)
+    sqlx::query("INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)")
         .bind(input.name.trim())
         .bind(input.email.trim())
         .bind(input.subject.trim())
         .bind(input.message.trim())
-        .execute(&state.db)
+        .execute(&state.tenant_db(&tenant).await?)
         .await?;
     Ok(StatusCode::CREATED)
 }
