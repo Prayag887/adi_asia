@@ -1,104 +1,65 @@
-# Asia Dialogue Initiative
+# Folio
 
-ADI is a Vite/React website with a private editorial experience, Supabase authentication/database, and Cloudflare R2 blog-image storage.
+Hosts many small client websites from one tiny server.
 
-## Local product
+- Each client gets a **static site**: fast, cheap, and served straight from disk.
+- One shared **Rust server** gives every site its dynamic parts: editor login, inline text editing, blog posts, image uploads and the contact form.
+- An **owner admin** shows you every site's health, domains, payments and domain renewals.
 
-- Public site: `http://127.0.0.1:5173`
-- Editor workflow: sign in from the site, select **Edit site**, edit text directly in the live layout, and use **Save changes** at the bottom of the page.
-- Blog workflow: sign in, select **Write a post**, upload a cover image, and publish. Published posts are public and open in a dedicated reader screen.
+Live: **asiacan.sollari.app** (ADI) · admin at **folio.sollari.app/admin**
 
-## Supabase setup
+## Where things are
 
-1. Create a Supabase project.
-2. Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor.
-3. Disable public user registration in **Authentication → Providers → Email**. Create editor accounts from the Supabase dashboard.
-4. Copy `.env.example` to `.env` and add the project URL and public anon key.
+| Folder | What's in it | When you touch it |
+|---|---|---|
+| [`sites/`](sites/) | One folder per client (`sites/adi`, …). Each is its own Astro project. | Building or changing a client's website |
+| [`templates/`](templates/) | Reusable starting designs (`templates/basic`, …) | Creating a new look you'll reuse |
+| [`server/`](server/) | The shared Rust API + admin | Adding a feature for *all* sites |
+| [`scripts/`](scripts/) | One-command tasks (below) | Every day |
+| [`deploy/`](deploy/) | How the VPS is set up | Rarely |
 
-Row Level Security permits public reads, while all content changes require an authenticated editor. Blog authors can only modify their own posts.
+## Everyday tasks
 
-## Cloudflare Pages and R2
+| I want to… | Run |
+|---|---|
+| Start a new client site | `./scripts/new-site.sh acme` (or `./scripts/new-site.sh acme <template>`) |
+| Make a reusable design | `./scripts/new-template.sh minimal`, or from a client: `./scripts/new-template.sh elegant --from adi` |
+| Work on a site locally | `cd sites/acme && npm install && npm start` |
+| Put a site live | `./scripts/deploy-site.sh acme` |
+| Ship a server change | `./scripts/deploy-server.sh` |
 
-1. Create an R2 Standard bucket named `adi-blog-images` and enable public access through a custom domain such as `images.example.com`.
-2. Copy `wrangler.toml.example` to `wrangler.toml` and update the project and bucket names.
-3. In Cloudflare Pages, bind the R2 bucket as `BLOG_IMAGES`.
-4. Add `PUBLIC_R2_URL`, `SUPABASE_URL`, and `SUPABASE_ANON_KEY` as Pages environment variables.
-5. Deploy with build command `npm run build` and output directory `dist`.
+After creating a site, also open the admin: **New site** with the same slug, then add its domain and an editor login. To give it a hostname, follow [`deploy/tunnel/README.md`](deploy/tunnel/README.md#adding-a-site-hostname).
 
-The upload endpoint in `functions/api/blog-images.ts` verifies the Supabase session, accepts only JPG/PNG/WebP files up to 5 MB, and writes them to R2 without exposing storage credentials to the browser.
+## How it fits together
 
-For local frontend development, run `npm start`. Image uploads require Cloudflare Pages local development or a deployed Pages Function. The previous `pocketbase/` directory is retained only as a local data/schema backup during migration and is no longer used by the application.
-
-## React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+visitor ──► Cloudflare ──tunnel──► folio-web (Caddy) ──► /srv/sites/hosts/<host>/   static files
+                                       │
+                                       └── /api, /admin ──► folio-api (Rust) ──► SQLite
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- The server picks the site from the request's **Host** header. `asiacan.sollari.app` maps to the tenant `adi`.
+- Static pages are built in CI or on your machine and copied to `/srv/sites/tenants/<slug>/`. A site's content (text edits, posts) is loaded from `/api` at runtime, so editors never need a rebuild.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Run everything locally
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```sh
+# 1. server (from server/)
+cd server && set -a && . ./.env && set +a              # .env: see server/README.md
+FOLIO_PASSWORD='a-long-password' cargo run -- create-superadmin you@example.com
+cargo run                                              # http://admin.localhost:3000/admin
+
+# 2. a site (from another terminal)
+cd sites/adi && npm start                              # proxies /api to the local server
 ```
+
+In the local admin, create a site whose slug matches the folder (`adi`). It gets `adi.localhost` automatically.
+
+## Rules that keep this working
+
+1. **One client, one folder.** Never import across `sites/*`. Shared needs go in `server/`, and shared looks go in `templates/`.
+2. **Every tenant table has `tenant_id`, and every query filters on it.** SQLite has no row-level security, so this rule is what keeps clients' data apart.
+3. **Never edit `templates/*` to change a live site.** A site is a copy; change it in `sites/<slug>`.
+4. The VPS also runs **door2door**, an unrelated project. Folio must never touch its containers, network, Caddy config or ports.
+
+CI: [`.github/workflows/server.yml`](.github/workflows/server.yml) (server) and [`sites.yml`](.github/workflows/sites.yml) (only the sites that changed). They need the secrets `VPS_HOST`, `VPS_USER`, `VPS_PORT` and `VPS_SSH_KEY`, and the variable `PUBLIC_R2_URL`.

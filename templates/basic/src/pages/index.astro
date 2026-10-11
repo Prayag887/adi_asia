@@ -1,0 +1,59 @@
+---
+// Starter page. Replace the sections with the client's design; keep the data-* hooks
+// if you want the blog list and contact form to keep working.
+import Base from '@/layouts/Base.astro';
+
+const site = { name: 'Client Name', tagline: 'A one-line description of what they do.' };
+---
+<Base title={site.name} description={site.tagline}>
+  <header class="bg-brand text-white">
+    <div class="mx-auto max-w-5xl px-6 py-24 text-center">
+      <h1 class="text-4xl font-semibold text-white sm:text-6xl">{site.name}</h1>
+      <p class="mx-auto mt-6 max-w-2xl text-lg text-white/80">{site.tagline}</p>
+      <a href="#contact" class="mt-10 inline-block rounded bg-accent px-6 py-3 font-medium text-white hover:opacity-90">Get in touch</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="about" class="mx-auto max-w-3xl px-6 py-20">
+      <h2 class="text-3xl">About</h2>
+      <p class="mt-4 leading-relaxed">Static content lives right here in the markup. It is built once and served from disk.</p>
+    </section>
+
+    <!-- Blog: posts come from the Folio API at runtime, so editors can publish without a rebuild. -->
+    <section id="blog" class="bg-slate-50">
+      <div class="mx-auto max-w-5xl px-6 py-20">
+        <h2 class="text-3xl">Latest posts</h2>
+        <div data-posts class="mt-8 grid gap-8 md:grid-cols-3">
+          <p class="text-slate-500">Loading…</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="mx-auto max-w-xl px-6 py-20">
+      <h2 class="text-3xl">Contact</h2>
+      <form data-contact class="mt-6 space-y-4">
+        <input name="name" required placeholder="Name" class="w-full rounded border border-slate-300 px-3 py-2" />
+        <input name="email" type="email" required placeholder="Email" class="w-full rounded border border-slate-300 px-3 py-2" />
+        <input name="subject" placeholder="Subject" class="w-full rounded border border-slate-300 px-3 py-2" />
+        <textarea name="message" required rows="5" placeholder="Message" class="w-full rounded border border-slate-300 px-3 py-2"></textarea>
+        <button class="rounded bg-brand px-5 py-2 text-white hover:bg-brand-light">Send</button>
+        <p data-contact-status class="text-sm"></p>
+      </form>
+    </section>
+  </main>
+
+  <footer class="border-t py-8 text-center text-sm text-slate-500">© {new Date().getFullYear()} {site.name}</footer>
+
+  <template data-tpl="post"><article>
+    <img data-cover class="aspect-[16/10] w-full rounded object-cover" alt="" />
+    <p data-date class="mt-4 text-xs uppercase tracking-wide text-accent"></p>
+    <h3 data-title class="mt-1 text-xl"></h3>
+    <p data-excerpt class="mt-2 line-clamp-3 text-sm text-slate-600"></p>
+  </article></template>
+</Base>
+
+<script>
+  import '@/scripts/blog';
+  import '@/scripts/contact';
+</script>

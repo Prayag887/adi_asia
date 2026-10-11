@@ -1,0 +1,19 @@
+# On the VPS: /opt/folio/docker-compose.yml
+services:
+  folio:
+    image: ghcr.io/YOUR_GITHUB_USER/folio:latest
+    restart: unless-stopped
+    env_file: .env
+    # Only reachable from the host, where the existing Caddy runs.
+    ports:
+      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:3001:3001"
+    volumes:
+      - /srv/folio/data:/data          # SQLite DB (+ WAL)
+      - /srv/sites:/srv/sites          # static builds + host symlinks (Caddy reads this too)
+      - /srv/uploads:/srv/uploads      # only used if R2 is not configured
+    user: "65532:65532"                # distroless nonroot; chown the volumes to this uid
+    mem_limit: 96m
+    logging:
+      driver: json-file
+      options: { max-size: "10m", max-file: "3" }

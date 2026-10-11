@@ -1,0 +1,98 @@
+---
+import Icon from '@/components/Icon.astro';
+import { logoUrl } from '@/lib/r2';
+
+const navLinks = [
+  { label: 'About', href: '#about' },
+  { label: 'Our Work', href: '#our-work' },
+  { label: 'Focus Areas', href: '#sectoral-focus' },
+  { label: 'ASGPP', href: '#asgpp' },
+  { label: 'Blog', href: '#blog' },
+  { label: 'Contact', href: '#contact' },
+];
+---
+<nav data-nav class="fixed top-0 left-0 right-0 z-50 transition-all duration-700 bg-transparent py-2">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+    <div class="flex items-center justify-between">
+      <a href="#" data-scroll-top class="flex items-center gap-3 group">
+        <img data-nav-logo src={logoUrl} alt="ADI Logo" class="w-auto object-contain transition-all duration-700 origin-left h-12 sm:h-20 lg:h-24 scale-100" />
+        <span data-nav-title class="font-garamond text-[#f8f6f1] text-sm sm:text-base tracking-wide transition-all duration-500 opacity-100">Asia Dialogue Initiative</span>
+      </a>
+
+      <div class="hidden lg:flex items-center gap-8">
+        {navLinks.map((link) => (
+          <a href={link.href} data-scroll-link class="font-cinzel text-[11px] text-[#f8f6f1]/75 hover:text-[#b8946a] transition-colors duration-300 tracking-[0.15em] uppercase">{link.label}</a>
+        ))}
+        <button type="button" data-action="edit" data-auth="in" style="display: none;" class="inline-flex items-center gap-1 font-cinzel text-[11px] uppercase tracking-[0.15em] text-[#b8946a] hover:text-[#f8f6f1]"><Icon name="Pencil" class="h-3.5 w-3.5" />Edit site</button>
+        <button type="button" data-action="logout" data-auth="in" style="display: none;" class="text-[#f8f6f1]/60 hover:text-[#f8f6f1]" title="Sign out"><Icon name="LogOut" class="h-4 w-4" /></button>
+        <button type="button" data-action="login" data-auth="out" class="inline-flex items-center gap-1 font-cinzel text-[11px] uppercase tracking-[0.15em] text-[#f8f6f1]/75 hover:text-[#b8946a]"><Icon name="LogIn" class="h-3.5 w-3.5" />Sign in</button>
+      </div>
+
+      <button type="button" data-menu-toggle class="lg:hidden w-10 h-10 flex items-center justify-center text-[#f8f6f1]" aria-label="Toggle menu">
+        <div class="relative w-6 h-5">
+          <span data-bar="1" class="absolute left-0 w-full h-0.5 bg-current transition-all duration-300 top-0"></span>
+          <span data-bar="2" class="absolute left-0 top-2 w-full h-0.5 bg-current transition-all duration-300 opacity-100"></span>
+          <span data-bar="3" class="absolute left-0 w-full h-0.5 bg-current transition-all duration-300 top-4"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div data-mobile-menu class="fixed inset-0 z-40 lg:hidden transition-all duration-500 opacity-0 pointer-events-none">
+  <div data-menu-backdrop class="absolute inset-0 bg-[#0f1e33]"></div>
+  <div class="relative h-full flex flex-col items-center justify-center gap-8">
+    {navLinks.map((link, index) => (
+      <a href={link.href} data-scroll-link data-menu-link class="font-cormorant text-4xl font-light text-[#f8f6f1] hover:text-[#b8946a] transition-all duration-500 tracking-wide opacity-0 translate-y-4" style={`transition-delay: ${index * 100}ms;`}>{link.label}</a>
+    ))}
+  </div>
+</div>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('[data-nav]')!;
+  const logo = document.querySelector<HTMLElement>('[data-nav-logo]')!;
+  const title = document.querySelector<HTMLElement>('[data-nav-title]')!;
+  const swap = (el: HTMLElement, on: boolean, a: string, b: string) => {
+    el.classList.remove(...(on ? b : a).split(' '));
+    el.classList.add(...(on ? a : b).split(' '));
+  };
+  const onScroll = () => {
+    const scrolled = window.scrollY > 20;
+    swap(nav, scrolled, 'bg-[#0f1e33]/95 backdrop-blur-md shadow-lg py-1', 'bg-transparent py-2');
+    swap(logo, scrolled, 'h-10 sm:h-14 lg:h-16 scale-95', 'h-12 sm:h-20 lg:h-24 scale-100');
+    swap(title, scrolled, 'opacity-90', 'opacity-100');
+  };
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]')!;
+  const bars = [1, 2, 3].map((n) => document.querySelector<HTMLElement>(`[data-bar="${n}"]`)!);
+  let open = false;
+  const setMenu = (next: boolean) => {
+    open = next;
+    swap(menu, open, 'opacity-100 pointer-events-auto', 'opacity-0 pointer-events-none');
+    swap(bars[0], open, 'top-2 rotate-45', 'top-0');
+    swap(bars[1], open, 'opacity-0', 'opacity-100');
+    swap(bars[2], open, 'top-2 -rotate-45', 'top-4');
+    menu.querySelectorAll<HTMLElement>('[data-menu-link]').forEach((link) => swap(link, open, 'opacity-100 translate-y-0', 'opacity-0 translate-y-4'));
+  };
+  document.querySelector('[data-menu-toggle]')!.addEventListener('click', () => setMenu(!open));
+  document.querySelector('[data-menu-backdrop]')!.addEventListener('click', () => setMenu(false));
+
+  document.querySelector('[data-scroll-top]')!.addEventListener('click', (event) => {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  document.addEventListener('click', (event) => {
+    const link = (event.target as Element).closest<HTMLAnchorElement>('[data-scroll-link]');
+    const button = (event.target as Element).closest<HTMLElement>('[data-scroll-to]');
+    const href = link?.getAttribute('href') ?? button?.dataset.scrollTo;
+    if (!href) return;
+    event.preventDefault();
+    const target = document.querySelector(href);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+      setMenu(false);
+    }
+  });
+</script>

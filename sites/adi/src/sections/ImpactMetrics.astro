@@ -1,0 +1,37 @@
+---
+const metrics = [
+  { value: '3', label: 'Countries of Operation' },
+  { value: '2', label: 'Sectoral Focus Areas' },
+  { value: '3', label: 'Academic Programs' },
+  { value: '1', label: 'Regional Platform' },
+];
+---
+<section id="impact-metrics" data-section="impact" class="relative py-28 lg:py-36 overflow-hidden" style="background-color: #f8f6f1;">
+  <div class="absolute inset-0 opacity-[0.02] pointer-events-none" style={`background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");`}></div>
+
+  <div class="absolute inset-0 opacity-[0.015] pointer-events-none">
+    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+        <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
+          <path d="M 8 0 L 0 0 0 8" fill="none" stroke="#0f1e33" stroke-width="0.3"></path>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)"></rect>
+    </svg>
+  </div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+    <div class="text-center mb-16 lg:mb-20">
+      <h2 class="section-title opacity-100 translate-y-0">Creating Lasting <span style="color: #9a7b52;">Impact</span></h2>
+    </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      {metrics.map((metric, index) => (
+        <div class="text-center p-10 opacity-100 translate-y-0" style={`transition-delay: ${index * 150}ms;`}>
+          <div class="font-playfair text-5xl sm:text-6xl lg:text-7xl font-bold mb-5" style="color: #9a7b52;">{metric.value}</div>
+          <div class="font-inter text-base tracking-[1.5px] uppercase" style="color: #4a5568;">{metric.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

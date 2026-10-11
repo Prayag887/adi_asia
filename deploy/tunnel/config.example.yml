@@ -1,0 +1,10 @@
+tunnel: <TUNNEL_ID>
+credentials-file: /etc/cloudflared/<TUNNEL_ID>.json
+edge-ip-version: "4"
+no-autoupdate: true
+ingress:
+  - hostname: asiacan.sollari.app
+    service: http://folio-web:80
+  - hostname: folio.sollari.app
+    service: http://folio-web:80
+  - service: http_status:404

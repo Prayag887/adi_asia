@@ -1,0 +1,232 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ t.name }}{% endblock %}
+{% block content %}
+<div class="head">
+  <div>
+    <p class="muted-text"><a href="/admin">Sites</a> /</p>
+    <h1>{{ t.name }} <span class="pill {% if t.status == "active" %}good{% else %}muted{% endif %}">{{ t.status }}</span></h1>
+    <p class="muted-text">{{ t.slug }} · created {{ t.created_at.get(..10).unwrap_or("") }}</p>
+  </div>
+  <div class="head-pills">
+    <span class="pill {{ pay.class }}">Hosting: {{ pay.label }}</span>
+    {% if build_deployed %}<span class="pill good">Build deployed</span>{% else %}<span class="pill warn">No build uploaded</span>{% endif %}
+  </div>
+</div>
+
+{% if !build_deployed %}
+<div class="flash warn">No <code>index.html</code> in <code>{{ build_dir }}</code>. Deploy the site's static build there (see README → Deploying a site).</div>
+{% endif %}
+
+<!-- Domains -->
+<section class="card">
+  <div class="card-head">
+    <h2>Domains</h2>
+    <form method="post" action="/admin/health/run" hx-disabled-elt="find button"><button>Check health now</button></form>
+  </div>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Host</th><th>Status</th><th>Health</th><th>Latency</th><th>Uptime 24h</th><th></th></tr></thead>
+    <tbody>
+    {% for d in domains %}
+      <tr>
+        <td>{% if d.verified %}<a href="https://{{ d.host }}" target="_blank" rel="noopener" hx-boost="false">{{ d.host }}</a>{% else %}{{ d.host }}{% endif %}
+          {% if d.is_default %}<div class="muted-text">default subdomain</div>{% endif %}</td>
+        <td>
+          {% if d.is_primary %}<span class="pill good">Primary</span>{% elif d.verified %}<span class="pill muted">Redirects to primary</span>{% else %}<span class="pill warn">Waiting for DNS</span>{% endif %}
+        </td>
+        <td>{% if d.verified %}<span class="pill {{ d.site.class }}">{{ d.site.label }}</span>{% else %}—{% endif %}</td>
+        <td>{{ d.site.latency }}</td>
+        <td>{{ d.uptime }}</td>
+        <td class="row-actions">
+          {% if !d.verified %}
+            <form method="post" action="/admin/tenants/{{ t.id }}/domains/{{ d.host }}/verify"><button>Verify DNS</button></form>
+          {% elif !d.is_primary %}
+            <form method="post" action="/admin/tenants/{{ t.id }}/domains/{{ d.host }}/primary"><button>Make primary</button></form>
+          {% endif %}
+          {% if !d.is_primary %}
+            <form method="post" action="/admin/tenants/{{ t.id }}/domains/{{ d.host }}/delete" hx-confirm="Remove {{ d.host }}?"><button class="danger">Remove</button></form>
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <form method="post" action="/admin/tenants/{{ t.id }}/domains" class="inline">
+    <input name="host" placeholder="www.client.com" required>
+    <button class="primary">Add domain</button>
+  </form>
+  <details class="help">
+    <summary>DNS instructions to send the client</summary>
+    <ul>
+      <li><code>www.client.com</code> → <code>CNAME</code> to <code>sites.{{ base_domain }}</code></li>
+      <li><code>client.com</code> (apex) → <code>A</code> record to <code>{% if server_ips.is_empty() %}your server IP{% else %}{{ server_ips }}{% endif %}</code></li>
+      <li>On Cloudflare: use <em>DNS only</em> (grey cloud), or SSL mode <em>Full</em> if proxied.</li>
+      <li>Add both hosts here, press <em>Verify DNS</em> after the records propagate. The first verified custom domain becomes primary; the rest 301-redirect to it.</li>
+    </ul>
+  </details>
+</section>
+
+<!-- Domain registrations -->
+<section class="card">
+  <h2>Domain renewals</h2>
+  <p class="muted-text">Registered names the client pays for. Expiry is fetched automatically via RDAP weekly when the TLD supports it.</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Domain</th><th>Registrar</th><th>Expires</th><th>Days left</th><th>Renewal</th><th>Last lookup</th><th></th></tr></thead>
+    <tbody>
+    {% for r in registrations %}
+      <tr>
+        <td>{{ r.domain }}{% if !r.managed_by_us %}<div class="muted-text">client-managed</div>{% endif %}</td>
+        <td>{{ r.registrar }}</td>
+        <td>{{ r.expires_at }}</td>
+        <td><span class="pill {{ r.due.class }}">{{ r.due.label }}</span></td>
+        <td>{{ r.price }}</td>
+        <td>{{ r.checked }}{% if let Some(e) = r.rdap_error %}<div class="muted-text" title="{{ e }}">lookup failed</div>{% endif %}</td>
+        <td class="row-actions">
+          <form method="post" action="/admin/tenants/{{ t.id }}/registrations/{{ r.domain }}/refresh" hx-disabled-elt="find button"><button>Refresh</button></form>
+          <form method="post" action="/admin/tenants/{{ t.id }}/registrations/{{ r.domain }}/delete" hx-confirm="Stop tracking {{ r.domain }}?"><button class="danger">Remove</button></form>
+        </td>
+      </tr>
+    {% else %}
+      <tr><td colspan="7" class="empty">No domains tracked.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <form method="post" action="/admin/tenants/{{ t.id }}/registrations" class="grid4">
+    <label>Domain<input name="domain" placeholder="client.com" required></label>
+    <label>Registrar<input name="registrar" placeholder="auto from RDAP"></label>
+    <label>Expires<input name="expires_at" type="date"><small>Blank = look up</small></label>
+    <label>Renewal price ({{ t.currency }})<input name="renewal_price" inputmode="decimal" placeholder="15"></label>
+    <label class="check"><input type="checkbox" name="managed_by_us" checked> We renew it</label>
+    <div class="actions"><button class="primary">Save domain</button></div>
+  </form>
+</section>
+
+<!-- Billing -->
+<section class="card">
+  <h2>Hosting & payments</h2>
+  <div class="split">
+    <form method="post" action="/admin/tenants/{{ t.id }}" class="grid2">
+      <label>Name<input name="name" value="{{ t.name }}" required></label>
+      <label>Status
+        <select name="status">
+          <option value="active" {% if t.status == "active" %}selected{% endif %}>Active</option>
+          <option value="suspended" {% if t.status == "suspended" %}selected{% endif %}>Suspended (shows "unavailable" page)</option>
+        </select></label>
+      <label>Contact name<input name="contact_name" value="{{ t.contact_name }}"></label>
+      <label>Contact email<input name="contact_email" type="email" value="{{ t.contact_email }}"></label>
+      <label>Plan<input name="plan_name" value="{{ t.plan_name }}"></label>
+      <label>Price<input name="price" value="{{ price }}" inputmode="decimal"></label>
+      <label>Currency<input name="currency" value="{{ t.currency }}" maxlength="3"></label>
+      <label>Billing cycle
+        <select name="billing_cycle">
+          <option value="yearly" {% if t.billing_cycle == "yearly" %}selected{% endif %}>Yearly</option>
+          <option value="monthly" {% if t.billing_cycle == "monthly" %}selected{% endif %}>Monthly</option>
+        </select></label>
+      <label>Paid until<input name="paid_until" type="date" value="{% if let Some(p) = t.paid_until %}{{ p }}{% endif %}"></label>
+      <label class="full">Notes<textarea name="notes" rows="2">{{ t.notes }}</textarea></label>
+      <div class="actions"><button class="primary">Save details</button></div>
+    </form>
+
+    <div>
+      <h3>Record a payment</h3>
+      <form method="post" action="/admin/tenants/{{ t.id }}/payments" class="grid2">
+        <label>Type
+          <select name="kind"><option value="hosting">Hosting</option><option value="domain">Domain</option><option value="other">Other</option></select></label>
+        <label>Amount ({{ t.currency }})<input name="amount" required inputmode="decimal"></label>
+        <label>Paid on<input name="paid_on" type="date" value="{{ today }}" required></label>
+        <label>Method<input name="method" placeholder="Bank transfer, eSewa…"></label>
+        <label class="full">Note<input name="note"></label>
+        <label class="check full"><input type="checkbox" name="extend" checked> Hosting: extend paid-until by one {% if t.billing_cycle == "monthly" %}month{% else %}year{% endif %}</label>
+        <div class="actions"><button class="primary">Record payment</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Date</th><th>Type</th><th>Amount</th><th>Method</th><th>Note</th><th></th></tr></thead>
+    <tbody>
+    {% for p in payments %}
+      <tr>
+        <td>{{ p.paid_on }}</td><td>{{ p.kind }}</td><td>{{ p.amount }}</td><td>{{ p.method }}</td><td>{{ p.note }}</td>
+        <td class="row-actions"><form method="post" action="/admin/tenants/{{ t.id }}/payments/{{ p.id }}/delete" hx-confirm="Delete this payment record?"><button class="danger">Delete</button></form></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="6" class="empty">No payments recorded.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- Editors -->
+<section class="card">
+  <h2>Site editors</h2>
+  <p class="muted-text">These accounts use <em>Sign in</em> on the client's own site to edit text, sections and blog posts.</p>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Email</th><th>Added</th><th>Reset password</th><th></th></tr></thead>
+    <tbody>
+    {% for u in users %}
+      <tr>
+        <td>{{ u.email }}</td>
+        <td>{{ u.created_at.get(..10).unwrap_or("") }}</td>
+        <td><form method="post" action="/admin/tenants/{{ t.id }}/users/{{ u.id }}/password" class="inline tight">
+          <input name="password" type="password" minlength="10" placeholder="new password" required autocomplete="new-password"><button>Set</button></form></td>
+        <td class="row-actions"><form method="post" action="/admin/tenants/{{ t.id }}/users/{{ u.id }}/delete" hx-confirm="Remove {{ u.email }}?"><button class="danger">Remove</button></form></td>
+      </tr>
+    {% else %}
+      <tr><td colspan="4" class="empty">No editors yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  <form method="post" action="/admin/tenants/{{ t.id }}/users" class="inline">
+    <input name="email" type="email" placeholder="editor@client.com" required>
+    <input name="password" type="password" minlength="10" placeholder="password (10+ chars)" required autocomplete="new-password">
+    <button class="primary">Add editor</button>
+  </form>
+</section>
+
+<!-- Health log -->
+<section class="card">
+  <h2>Recent health checks</h2>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>Time (UTC)</th><th>Host</th><th>Result</th><th>Latency</th></tr></thead>
+    <tbody>
+    {% for c in checks %}
+      <tr><td>{{ c.when() }}</td><td>{{ c.host }}</td>
+        <td><span class="pill {% if c.ok %}good{% else %}bad{% endif %}">{{ c.detail() }}</span></td><td>{{ c.latency() }}</td></tr>
+    {% else %}
+      <tr><td colspan="4" class="empty">No checks yet.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- Contact messages -->
+<section class="card">
+  <h2>Contact form messages</h2>
+  {% for m in messages %}
+    <article class="message">
+      <header><strong>{{ m.name }}</strong> &lt;<a href="mailto:{{ m.email }}" hx-boost="false">{{ m.email }}</a>&gt; <span class="muted-text">{{ m.created_at.get(..16).unwrap_or("").replace("T", " ") }}</span></header>
+      {% if !m.subject.is_empty() %}<p><em>{{ m.subject }}</em></p>{% endif %}
+      <p class="pre">{{ m.message }}</p>
+    </article>
+  {% else %}
+    <p class="empty">No messages.</p>
+  {% endfor %}
+</section>
+
+<section class="card danger-zone">
+  <h2>Danger zone</h2>
+  <form method="post" action="/admin/tenants/{{ t.id }}/delete" hx-confirm="Delete {{ t.name }} and ALL its content, posts, editors and payment records? This cannot be undone.">
+    <button class="danger">Delete site</button>
+  </form>
+</section>
+{% endblock %}

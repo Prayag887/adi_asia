@@ -1,0 +1,51 @@
+# Merge into the EXISTING Caddyfile on the VPS.
+
+# 1) Add to the global options block at the top (create one if absent):
+{
+	on_demand_tls {
+		ask http://127.0.0.1:3001/tls-check
+	}
+}
+
+# 2) Owner console.
+admin.folio.example {
+	reverse_proxy 127.0.0.1:3000
+}
+
+# 3) Every tenant site: default subdomains and custom domains.
+#    Certificates are issued on first request, only for hosts the ask endpoint approves.
+https:// {
+	tls {
+		on_demand
+	}
+
+	encode zstd gzip
+
+	handle /api/* {
+		reverse_proxy 127.0.0.1:3000
+	}
+
+	# Only used when R2 is not configured.
+	handle /uploads/* {
+		root * /srv
+		file_server
+	}
+
+	# Static build of the tenant that owns {host}. Hosts without a folder
+	# (aliases like client.com -> www.client.com) fall through to Folio, which redirects.
+	@site file {
+		root /srv/sites/hosts/{host}
+		try_files {path} {path}/index.html /index.html
+	}
+	handle @site {
+		root * /srv/sites/hosts/{host}
+		try_files {path} {path}/index.html /index.html
+		header /_astro/* Cache-Control "public, max-age=31536000, immutable"
+		header /assets/* Cache-Control "public, max-age=31536000, immutable"
+		file_server
+	}
+
+	handle {
+		reverse_proxy 127.0.0.1:3000
+	}
+}

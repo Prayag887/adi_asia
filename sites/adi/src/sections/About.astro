@@ -1,0 +1,76 @@
+---
+import Icon from '@/components/Icon.astro';
+
+const statsCards = [
+  { icon: 'Network', title: 'Regional Reach', description: 'Trusted presence across Asia with local teams embedded in communities' },
+  { icon: 'MessageCircle', title: 'Quiet Diplomacy', description: 'Discreet forums for constructive dialogue beyond public pressure' },
+  { icon: 'TreePine', title: 'Local Context', description: 'Solutions grounded in regional knowledge and practical realities' },
+] as const;
+
+const aboutParagraphs = [
+  'Asia Dialogue Initiative (ADI) is an independent platform dedicated to advancing peace through dialogue, mediation, and sustained engagement across Asia. We provide trusted spaces for quiet diplomacy, enabling constructive conversations away from public and political pressure.',
+  'ADI supports discreet dialogue forums, conflict mediation, and relationship-building among political actors, policymakers, civil society, and community leaders. Our work is grounded in regional knowledge and local context, with an emphasis on discretion, patience, and practical outcomes rather than externally imposed solutions.',
+  'We approach peace-building as a long-term process that requires trust, inclusion, and responsiveness to local realities. Alongside dialogue and mediation, ADI engages in sectoral initiatives that strengthen social cohesion and institutional resilience.',
+  'We are based in Kathmandu, Nepal with local teams in the countries we work.',
+];
+const shown = 'opacity: 1; transform: translateY(0);';
+---
+<section id="about" data-section="about" class="relative py-32 lg:py-40 overflow-hidden" style="background-color: #faf9f6;">
+  <div class="absolute inset-0 opacity-[0.025] pointer-events-none mix-blend-multiply" style={`background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.2' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");`}></div>
+
+  <div class="absolute inset-0 pointer-events-none">
+    <div class="absolute w-[700px] h-[700px] rounded-full opacity-[0.04] blur-3xl" style="top: -20%; left: -20%; background: radial-gradient(circle, #0f1e33 0%, transparent 65%);"></div>
+    <div class="absolute w-[600px] h-[600px] rounded-full opacity-[0.035] blur-3xl" style="bottom: -15%; right: -15%; background: radial-gradient(circle, #b8946a 0%, transparent 65%);"></div>
+    <div class="absolute w-0.5 h-32 bg-gradient-to-b from-transparent via-[#b8946a]/20 to-transparent blur-[0.5px]" style="top: 20%; left: 5%;"></div>
+    <div class="absolute w-0.5 h-24 bg-gradient-to-b from-transparent via-[#0f1e33]/12 to-transparent blur-[0.5px]" style="bottom: 25%; right: 7%;"></div>
+    <div class="absolute w-40 h-px bg-gradient-to-r from-transparent via-[#b8946a]/15 to-transparent" style="top: 35%; left: 10%;"></div>
+  </div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 xl:px-16">
+    <div class="grid lg:grid-cols-5 gap-20 lg:gap-24 items-start">
+      <div class="lg:col-span-3">
+        <div class="opacity-100 translate-y-0">
+          <div class="inline-flex items-center gap-3 mb-2">
+            <div class="w-8 h-px bg-gradient-to-r from-[#b8946a]/40 to-transparent"></div>
+            <span class="font-inter text-xs font-medium tracking-[0.2em] uppercase" style="color: #b8946a;">About ADI</span>
+          </div>
+        </div>
+
+        <h2 class="font-playfair text-3xl sm:text-4xl lg:text-5xl font-light leading-[1.15] tracking-tight mt-6 mb-12 opacity-100 translate-x-0" style="color: #0f1e33;">Independent. Regional.<br /><span class="font-normal">Grounded in Local Context.</span></h2>
+
+        <div class="space-y-7 max-w-2xl">
+          {aboutParagraphs.map((paragraph) => (
+            <p class="font-inter text-[15px] leading-[1.8] tracking-tight" style={`color: #3a4556; ${shown}`}>{paragraph}</p>
+          ))}
+          <div class="pt-8 mt-2" style={shown}>
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-px bg-gradient-to-r from-[#b8946a]/30 to-transparent"></div>
+              <span class="font-inter text-sm font-medium tracking-wide" style="color: #9a7b52;">Est. Kathmandu</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-2 space-y-6 lg:pt-2">
+        {statsCards.map((card) => (
+          <div class="group relative overflow-hidden rounded-xl transition-all duration-500 hover:shadow-2xl hover:shadow-black/5" style={`background-color: #ffffff; border: 1px solid rgba(184, 148, 106, 0.08); padding: 28px; ${shown}`}>
+            <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style="background: linear-gradient(135deg, rgba(184, 148, 106, 0.02) 0%, transparent 100%);"></div>
+            <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#b8946a]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div class="relative flex items-start gap-5">
+              <div class="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-3" style="background: linear-gradient(135deg, rgba(15, 30, 51, 0.04) 0%, rgba(184, 148, 106, 0.03) 100%); border: 1px solid rgba(184, 148, 106, 0.08);">
+                <Icon name={card.icon} class="w-6 h-6 transition-colors duration-500" style="color: #9a7b52;" strokeWidth={1.5} />
+              </div>
+              <div class="flex-1 pt-1">
+                <h3 class="font-playfair text-[22px] font-semibold mb-2.5 tracking-tight transition-colors duration-300 group-hover:text-[#0f1e33]" style="color: #1a2332;">{card.title}</h3>
+                <p class="font-inter text-[15px] leading-[1.7] tracking-tight" style="color: #556578;">{card.description}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div class="pt-6 opacity-40" style={shown}>
+          <div class="w-16 h-px bg-gradient-to-r from-[#b8946a]/40 via-[#b8946a]/20 to-transparent"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+{% block title %}Sites{% endblock %}
+{% block content %}
+<div class="head">
+  <div>
+    <h1>Sites</h1>
+    <p class="muted-text">Signed in as {{ admin_email }} · images: {{ storage }}</p>
+  </div>
+  <form method="post" action="/admin/health/run" hx-disabled-elt="find button">
+    <button>Run health checks now</button>
+  </form>
+</div>
+
+<section class="stats">
+  <div class="stat"><span>{{ summary.total }}</span>sites</div>
+  <div class="stat good"><span>{{ summary.up }}</span>up</div>
+  <div class="stat {% if summary.down > 0 %}bad{% endif %}"><span>{{ summary.down }}</span>down</div>
+  <div class="stat {% if summary.overdue > 0 %}bad{% endif %}"><span>{{ summary.overdue }}</span>unpaid / overdue</div>
+  <div class="stat {% if summary.domains_expiring > 0 %}warn{% endif %}"><span>{{ summary.domains_expiring }}</span>domains expiring ≤ 30d</div>
+</section>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr><th>Site</th><th>Primary domain</th><th>Health</th><th>Latency</th><th>Uptime 24h</th><th>Hosting</th><th>Domain renewal</th></tr>
+  </thead>
+  <tbody>
+  {% for r in rows %}
+    <tr>
+      <td><a href="/admin/tenants/{{ r.id }}"><strong>{{ r.name }}</strong></a><div class="muted-text">{{ r.slug }}{% if r.status != "active" %} · {{ r.status }}{% endif %}</div></td>
+      <td>{% if let Some(h) = r.host %}<a href="https://{{ h }}" target="_blank" rel="noopener" hx-boost="false">{{ h }}</a>{% else %}<span class="muted-text">—</span>{% endif %}</td>
+      <td><span class="pill {{ r.site.class }}">{{ r.site.label }}</span></td>
+      <td>{{ r.site.latency }}</td>
+      <td>{{ r.uptime }}</td>
+      <td><span class="pill {{ r.pay.class }}">{{ r.pay.label }}</span><div class="muted-text">{{ r.price }}</div></td>
+      <td>{% if let Some(d) = r.domain %}<span class="pill {{ r.domain_due.class }}">{{ r.domain_due.label }}</span><div class="muted-text">{{ d }}</div>{% else %}<span class="muted-text">not tracked</span>{% endif %}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="7" class="empty">No sites yet. <a href="/admin/tenants/new">Create the first one</a>.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

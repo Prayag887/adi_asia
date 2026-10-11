@@ -1,0 +1,32 @@
+# Folio: fully separate from anything else on this VPS. Own network, no published
+# ports. Public traffic arrives through a Cloudflare Tunnel (outbound connection).
+name: folio
+services:
+  folio-api:
+    image: folio:latest
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - /srv/folio/data:/data:z
+      - /srv/sites:/srv/sites:z
+    mem_limit: 96m
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "3" } }
+
+  # Serves each tenant's static build from disk; /api and /admin go to folio-api.
+  folio-web:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro,z
+      - /srv/sites:/srv/sites:ro,z
+    mem_limit: 48m
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "3" } }
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate --config /etc/cloudflared/config.yml run
+    volumes:
+      - ./cloudflared:/etc/cloudflared:ro,z
+    mem_limit: 64m
+    logging: { driver: json-file, options: { max-size: "10m", max-file: "3" } }

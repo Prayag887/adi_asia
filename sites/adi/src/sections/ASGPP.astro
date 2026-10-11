@@ -1,0 +1,58 @@
+---
+import Icon from '@/components/Icon.astro';
+
+const programs = [
+  { name: 'Governance', icon: 'BookOpen' },
+  { name: 'Public Policy', icon: 'Users' },
+  { name: 'Peace Studies', icon: 'Award' },
+] as const;
+---
+<section id="asgpp" data-section="asgpp" class="relative py-28 lg:py-36 overflow-hidden" style="background: linear-gradient(160deg, #0a1525 0%, #0f1e33 40%, #0a1525 100%);">
+  <div class="absolute inset-0 opacity-[0.015] pointer-events-none" style={`background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");`}></div>
+
+  <div class="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.04]">
+    <svg class="absolute w-full h-full" viewBox="0 0 1440 800" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <pattern id="geometric" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
+          <polygon points="60,15 105,60 60,105 15,60" fill="none" stroke="#b8946a" stroke-width="0.5"></polygon>
+          <circle cx="60" cy="60" r="2" fill="#b8946a" fill-opacity="0.3"></circle>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#geometric)"></rect>
+    </svg>
+  </div>
+
+  <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+    <div class="text-center mb-14 lg:mb-18">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full mb-10 opacity-100 scale-100" style="background: rgba(184, 148, 106, 0.15); border: 1px solid rgba(184, 148, 106, 0.35);">
+        <Icon name="GraduationCap" class="w-10 h-10" style="color: #b8946a;" />
+      </div>
+      <span class="section-label block opacity-100 translate-y-0">Education Initiative</span>
+      <h2 class="font-cormorant text-4xl sm:text-5xl lg:text-[56px] text-[#f8f6f1] font-semibold mt-5 mb-5 leading-tight opacity-100 translate-y-0">The Asian School of Governance<br /><span style="color: #b8946a;">and Public Policy</span></h2>
+      <p class="font-playfair text-2xl sm:text-[28px] text-[#f8f6f1]/70 opacity-100 translate-y-0">Bridging Theory and Practice</p>
+    </div>
+
+    <div class="text-center max-w-3xl mx-auto mb-14 lg:mb-18">
+      <p class="font-inter text-lg text-[#f8f6f1]/70 leading-relaxed mb-6" style="opacity: 1; transform: translateY(0);">The Asian School of Governance and Public Policy (ASGPP) is ADI's initiative to translate practical, field-based experience into rigorous academic learning. Drawing on ADI's work in peacebuilding, digital governance, and public health, ASGPP provides students with an opportunity to engage directly with real-world challenges in governance and policy.</p>
+      <p class="font-inter text-lg text-[#f8f6f1]/70 leading-relaxed" style="opacity: 1; transform: translateY(0);">The curriculum is designed to bridge theory and practice, encouraging critical thinking, applied research, and a nuanced understanding of the social, political, and institutional contexts shaping public life in Asia.</p>
+    </div>
+
+    <div class="rounded-2xl p-10 sm:p-14 lg:p-18 max-w-3xl mx-auto opacity-100 scale-100" style="background-color: rgba(248, 246, 241, 0.97); box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);">
+      <h3 class="font-cormorant text-3xl sm:text-4xl font-semibold text-center mb-3" style="color: #0f1e33;">Programs Offered</h3>
+      <p class="font-inter text-lg text-center mb-10" style="color: #4a5568;">Six-Month Graduate Diploma &amp; Master's Programs</p>
+      <div class="flex flex-wrap justify-center gap-4 mb-10">
+        {programs.map((program) => (
+          <div class="flex items-center gap-3 px-6 py-3 rounded-lg" style="background-color: rgba(15, 30, 51, 0.04);">
+            <Icon name={program.icon} class="w-5 h-5" style="color: #9a7b52;" />
+            <span class="font-inter text-lg font-medium" style="color: #0f1e33;">{program.name}</span>
+          </div>
+        ))}
+      </div>
+      <p class="font-inter text-base text-center mb-10" style="color: #4a5568;">Selective cohort | Full scholarships for deserving candidates</p>
+      <p class="font-inter text-base text-center leading-relaxed mb-12 max-w-2xl mx-auto" style="color: #4a5568;">By linking academic learning with practical engagement, ASGPP seeks to cultivate a new generation of practitioners and thinkers capable of designing innovative solutions, promoting inclusive governance, and advancing sustainable peace across the region.</p>
+      <div class="text-center">
+        <a href="#contact" class="inline-flex items-center gap-2 btn-primary group">Learn About ASGPP<Icon name="ArrowRight" class="w-5 h-5 transition-transform group-hover:translate-x-1" /></a>
+      </div>
+    </div>
+  </div>
+</section>

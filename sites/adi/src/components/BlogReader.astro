@@ -1,0 +1,21 @@
+---
+import Icon from '@/components/Icon.astro';
+---
+<main data-reader class="min-h-screen bg-[#faf9f6] pb-24 pt-32 sm:pt-40" style="display: none;">
+  <article class="mx-auto max-w-5xl px-6 sm:px-8">
+    <div class="mb-12 flex items-center justify-between">
+      <button type="button" data-reader-back class="inline-flex items-center gap-2 font-inter text-sm text-[#4a5568] transition-colors hover:text-[#9a7b52]"><Icon name="ArrowLeft" class="h-4 w-4" />Back to all stories</button>
+      <div data-reader-admin class="flex gap-2" style="display: none;">
+        <button type="button" data-reader-edit class="inline-flex items-center gap-1 rounded border border-[#0f1e33]/20 px-3 py-1.5 font-inter text-xs text-[#4a5568] hover:bg-[#0f1e33] hover:text-[#f8f6f1]"><Icon name="Pencil" class="h-3.5 w-3.5" />Edit</button>
+        <button type="button" data-reader-delete class="inline-flex items-center gap-1 rounded border border-red-300 px-3 py-1.5 font-inter text-xs text-red-600 hover:bg-red-600 hover:text-white disabled:opacity-50"><Icon name="Trash2" class="h-3.5 w-3.5" /><span data-reader-delete-label>Delete</span></button>
+      </div>
+    </div>
+    <header class="mx-auto mb-12 max-w-3xl text-center">
+      <p data-reader-date class="font-inter text-xs uppercase tracking-[.2em] text-[#9a7b52]"></p>
+      <h1 data-reader-title class="mt-5 font-cormorant text-5xl font-semibold leading-[1.05] text-[#0f1e33] sm:text-7xl"></h1>
+      <p data-reader-excerpt class="mx-auto mt-6 max-w-2xl font-inter text-lg leading-relaxed text-[#64748b]"></p>
+    </header>
+    <span data-reader-image></span>
+    <div data-reader-body class="mx-auto mt-12 max-w-2xl whitespace-pre-wrap font-inter text-[17px] leading-8 text-[#334155] sm:text-lg"></div>
+  </article>
+</main>

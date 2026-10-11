@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+{% block title %}New site{% endblock %}
+{% block content %}
+<h1>New site</h1>
+<form method="post" action="/admin/tenants" class="card grid2">
+  <label>Client / site name<input name="name" required placeholder="Asia Dialogue Initiative"></label>
+  <label>Slug<input name="slug" required pattern="[a-z0-9]{2,40}" placeholder="adi">
+    <small>Lowercase letters and digits. Default address: <code>slug.{{ base_domain }}</code></small></label>
+  <label>Contact name<input name="contact_name"></label>
+  <label>Contact email<input name="contact_email" type="email"></label>
+  <label>Hosting price<input name="price" required value="0" inputmode="decimal"></label>
+  <label>Currency<input name="currency" value="USD" maxlength="3"></label>
+  <label>Billing cycle
+    <select name="billing_cycle"><option value="yearly">Yearly</option><option value="monthly">Monthly</option></select></label>
+  <div class="actions"><button class="primary">Create site</button></div>
+</form>
+{% endblock %}

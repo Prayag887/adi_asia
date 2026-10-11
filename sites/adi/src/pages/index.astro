@@ -1,0 +1,45 @@
+---
+import Base from '@/layouts/Base.astro';
+import Navigation from '@/components/Navigation.astro';
+import Blog from '@/components/Blog.astro';
+import BlogReader from '@/components/BlogReader.astro';
+import CustomSections from '@/components/CustomSections.astro';
+import EditorBar from '@/components/EditorBar.astro';
+import LoginModal from '@/components/LoginModal.astro';
+import SectionManager from '@/components/SectionManager.astro';
+import TypographyManager from '@/components/TypographyManager.astro';
+import Hero from '@/sections/Hero.astro';
+import About from '@/sections/About.astro';
+import OurWork from '@/sections/OurWork.astro';
+import SectoralFocus from '@/sections/SectoralFocus.astro';
+import ASGPP from '@/sections/ASGPP.astro';
+import ImpactMetrics from '@/sections/ImpactMetrics.astro';
+import Contact from '@/sections/Contact.astro';
+import Footer from '@/sections/Footer.astro';
+---
+<Base>
+  <div class="relative">
+    <Navigation />
+    <main data-home>
+      <Hero />
+      <Blog />
+      <About />
+      <OurWork />
+      <SectoralFocus />
+      <ASGPP />
+      <ImpactMetrics />
+      <CustomSections />
+      <Contact />
+    </main>
+    <BlogReader />
+    <Footer />
+    <EditorBar />
+    <SectionManager />
+    <TypographyManager />
+    <LoginModal />
+  </div>
+</Base>
+
+<script>
+  import '@/scripts/main';
+</script>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{% block title %}Folio{% endblock %} · Folio</title>
+  <link rel="stylesheet" href="/admin/static/admin.css">
+  <script src="/admin/static/htmx.min.js" defer></script>
+</head>
+<body hx-boost="true">
+  <header class="top">
+    <a href="/admin" class="brand">Folio</a>
+    <nav>
+      <a href="/admin">Sites</a>
+      <a href="/admin/tenants/new">New site</a>
+      <form method="post" action="/admin/logout"><button class="link">Sign out</button></form>
+    </nav>
+  </header>
+  <main class="wrap">
+    {% if let Some(msg) = flash.msg %}<div class="flash ok">{{ msg }}</div>{% endif %}
+    {% if let Some(err) = flash.err %}<div class="flash err">{{ err }}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

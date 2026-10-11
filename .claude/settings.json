@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cargo build:*)",
+      "Bash(cargo test:*)",
+      "Bash(cargo clippy:*)",
+      "Bash(cargo run:*)",
+      "Bash(npm install:*)",
+      "Bash(npm ci:*)",
+      "Bash(npm run build:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npm start:*)",
+      "Bash(./scripts/new-site.sh:*)",
+      "Bash(./scripts/new-template.sh:*)"
+    ],
+    "ask": [
+      "Bash(./scripts/deploy-site.sh:*)",
+      "Bash(./scripts/deploy-server.sh:*)"
+    ]
+  }
+}

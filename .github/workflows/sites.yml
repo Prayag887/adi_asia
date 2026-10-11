@@ -1,0 +1,46 @@
+name: sites
+on:
+  push:
+    branches: [main]
+    paths: ['sites/**', '.github/workflows/sites.yml']
+
+jobs:
+  # Deploy only the sites whose folder changed in this push.
+  changed:
+    runs-on: ubuntu-latest
+    outputs:
+      sites: ${{ steps.list.outputs.sites }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - id: list
+        run: |
+          # Changed folders under sites/ that still exist (a deleted site has nothing to deploy).
+          sites=$(for s in $(git diff --name-only HEAD~1 HEAD -- sites | cut -d/ -f2 | sort -u); do [ -d "sites/$s" ] && echo "$s"; done | jq -R . | jq -sc .)
+          echo "sites=${sites:-[]}" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: changed
+    if: needs.changed.outputs.sites != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        site: ${{ fromJson(needs.changed.outputs.sites) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sites/${{ matrix.site }}/package-lock.json
+      - name: Build and upload
+        env:
+          SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          DEPLOY_HOST: ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}
+          DEPLOY_PORT: ${{ secrets.VPS_PORT }}
+          PUBLIC_R2_URL: ${{ vars.PUBLIC_R2_URL }}
+        run: |
+          mkdir -p ~/.ssh && echo "$SSH_KEY" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "$DEPLOY_PORT" "${{ secrets.VPS_HOST }}" >> ~/.ssh/known_hosts
+          ./scripts/deploy-site.sh ${{ matrix.site }}

@@ -1,0 +1,152 @@
+---
+import Icon from '@/components/Icon.astro';
+
+const sectors = [
+  {
+    id: 'digital',
+    title: 'Digital Governance',
+    icon: 'Layers',
+    color: '#b8946a',
+    lightColor: 'rgba(184, 148, 106, 0.1)',
+    description: 'Building accountable institutions through digital transformation',
+    paragraphs: [
+      'Digital governance plays a key role in building accountable institutions and public trust. In complex bureaucratic settings, digital systems can reduce discretion, increase transparency, and improve citizens’ access to the state.',
+      'A core element of digital governance is Digital Public Infrastructure (DPI)—shared systems that enable large-scale delivery of public services. When implemented well, DPI lowers transaction costs, limits informal practices, and improves everyday state–citizen interactions.',
+      'Within this framework, the Asia Dialogue Initiative (ADI) supports agencies of the Government of Nepal by strengthening digital governance strategies, assisting implementation, and ensuring reforms remain grounded in local realities.',
+      'By linking institutional capacity with public trust, ADI views digital governance as an enabling condition for sustainable peace.',
+    ],
+    outcomes: ['Enhanced transparency', 'Reduced bureaucratic friction', 'Improved citizen access', 'Strengthened institutional legitimacy'],
+    outcomesTitle: 'Key Outcomes',
+    outcomeIcon: 'Check',
+    quote: '"Digital infrastructure as an enabling condition for sustainable peace"',
+  },
+  {
+    id: 'health',
+    title: 'Public Health',
+    icon: 'Activity',
+    color: '#6b7a5e',
+    lightColor: 'rgba(107, 122, 94, 0.1)',
+    description: 'Strengthening health systems as instruments of peace',
+    paragraphs: [
+      'Equitable access to health services strengthens trust between communities and public institutions, reduces everyday vulnerabilities, and mitigates grievances that often deepen social divisions. Effective public health systems function not only as service providers but also as instruments of health governance.',
+      "In Nepal, strengthening public health governance supports broader objectives of inclusion, federal coordination, and accountable service delivery. Improvements in access, quality, and responsiveness generate tangible peace dividends by demonstrating the state's capacity to meet basic needs fairly and consistently.",
+      'In Afghanistan, where prolonged conflict has eroded health infrastructure, community-based health initiatives play a critical role in sustaining social cohesion and human dignity, often serving as one of the few remaining interfaces between institutions and the population.',
+      "Asia Dialogue Initiative (ADI) supports public health initiatives as part of a peace-sustaining approach. In Nepal, ADI engages with public institutions and stakeholders to strengthen health governance, coordination, and policy implementation. In Afghanistan, ADI's locally embedded teams work with communities and partners to facilitate access to essential health services, recognizing that credible health systems generate peace dividends.",
+    ],
+    outcomes: ['Reduced uncertainty', 'Reinforced community trust', 'Strengthened social cohesion', 'Long-term stability'],
+    outcomesTitle: 'Peace Dividends',
+    outcomeIcon: 'Shield',
+    quote: '"Health governance as a foundation for social cohesion"',
+  },
+] as const;
+
+const stats = [
+  { label: 'Countries', value: '3' },
+  { label: 'Focus Areas', value: '2' },
+  { label: 'Approach', value: 'Peace-Sustaining' },
+];
+const hiddenUnless = (id: string) => (id === 'digital' ? undefined : 'display: none;');
+---
+<section id="sectoral-focus" data-section="sectoralFocus" class="relative py-24 lg:py-32 overflow-hidden" style="background-color: #f8f6f1;">
+  <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 2px 2px, #0f1e33 1px, transparent 0); background-size: 48px 48px;"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center max-w-3xl mx-auto mb-16 opacity-100 translate-y-0">
+      <span class="inline-block px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase mb-4" style="background-color: rgba(184, 148, 106, 0.1); color: #b8946a;">Our Focus Areas</span>
+      <h2 class="font-playfair text-4xl lg:text-5xl font-bold mb-5" style="color: #0f1e33;">Sectoral Focus</h2>
+      <p class="font-inter text-lg" style="color: #6b7280;">Strategic interventions in digital governance and public health</p>
+    </div>
+
+    <div class="flex justify-center mb-12 opacity-100 translate-y-0">
+      <div class="inline-flex p-1.5 rounded-xl" style="background-color: white; box-shadow: 0 4px 24px rgba(15, 30, 51, 0.08);">
+        {sectors.map((sector) => (
+          <button type="button" data-sector-tab={sector.id} data-color={sector.color} data-light={sector.lightColor} class="relative px-8 py-4 rounded-lg font-inter font-semibold transition-all duration-300 flex items-center gap-3" style={sector.id === 'digital' ? `background-color: ${sector.lightColor}; color: ${sector.color};` : 'background-color: transparent; color: #6b7280;'}>
+            <Icon name={sector.icon} class="w-5 h-5" />
+            <span>{sector.title}</span>
+            <div data-sector-indicator class="absolute bottom-0 left-1/2 -translate-x-1/2 w-12 h-1 rounded-full" style={`background-color: ${sector.color};${sector.id === 'digital' ? '' : ' display: none;'}`}></div>
+          </button>
+        ))}
+      </div>
+    </div>
+
+    {sectors.map((s) => (
+      <div data-sector-panel={s.id} data-editor-ignore={s.id !== 'digital' || undefined} class="opacity-100" style={hiddenUnless(s.id)}>
+        <div class="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+          <div class="space-y-8">
+            <div class="p-8 rounded-2xl" style={`background-color: white; box-shadow: 0 8px 32px rgba(15, 30, 51, 0.08); border-top: 4px solid ${s.color};`}>
+              <div class="flex items-start gap-4 mb-6">
+                <div class="p-3 rounded-xl" style={`background-color: ${s.lightColor};`}>
+                  <Icon name={s.icon} class="w-8 h-8" style={`color: ${s.color};`} />
+                </div>
+                <div class="flex-1">
+                  <h3 class="font-playfair text-2xl font-bold mb-2" style="color: #0f1e33;">{s.title}</h3>
+                  <p class="font-inter text-[15px] leading-relaxed" style="color: #6b7280;">{s.description}</p>
+                </div>
+              </div>
+              <div class="space-y-4">
+                {s.paragraphs.map((text) => <p class="font-inter text-[15px] leading-[1.85]" style="color: #4a5568;">{text}</p>)}
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-6">
+            <div class="lg:sticky lg:top-24">
+              <div class="p-8 rounded-2xl" style="background-color: white; box-shadow: 0 8px 32px rgba(15, 30, 51, 0.08);">
+                <div class="flex items-center gap-3 mb-6">
+                  <div class="w-2 h-2 rounded-full" style={`background-color: ${s.color};`}></div>
+                  <h4 class="font-playfair text-xl font-bold" style="color: #0f1e33;">{s.outcomesTitle}</h4>
+                </div>
+                <div class="space-y-4">
+                  {s.outcomes.map((outcome) => (
+                    <div class="group flex items-center gap-4 p-4 rounded-xl transition-all duration-300 hover:translate-x-2" style={`background-color: ${s.lightColor};`}>
+                      <div class="p-2 rounded-lg flex-shrink-0" style="background-color: white;">
+                        <Icon name={s.outcomeIcon} class="w-4 h-4" style={`color: ${s.color};`} />
+                      </div>
+                      <span class="font-inter text-[15px] font-medium" style="color: #0f1e33;">{outcome}</span>
+                    </div>
+                  ))}
+                </div>
+                <div class="mt-8 pt-6 border-t" style={`border-color: ${s.lightColor};`}>
+                  <button type="button" class="group w-full flex items-center justify-between p-4 rounded-xl font-inter font-semibold transition-all duration-300 hover:translate-x-1" style={`background-color: ${s.lightColor}; color: ${s.color};`}>
+                    <span>Learn More</span>
+                    <Icon name="ArrowRight" class="w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  </button>
+                </div>
+              </div>
+              <div class="mt-6 p-6 rounded-xl" style={`background-color: ${s.lightColor}; border-left: 4px solid ${s.color};`}>
+                <p class="font-playfair italic text-lg leading-relaxed" style="color: #0f1e33;">{s.quote}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    ))}
+
+    {sectors.map((s) => (
+      <div data-sector-panel={s.id} data-editor-ignore={s.id !== 'digital' || undefined} class="mt-20 grid md:grid-cols-3 gap-6 opacity-100 translate-y-0" style={hiddenUnless(s.id)}>
+        {stats.map((stat) => (
+          <div class="text-center p-8 rounded-xl" style="background-color: white; box-shadow: 0 4px 16px rgba(15, 30, 51, 0.06);">
+            <div class="font-playfair text-4xl font-bold mb-2" style={`color: ${s.color};`}>{stat.value}</div>
+            <div class="font-inter text-sm uppercase tracking-wider" style="color: #6b7280;">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>('[data-sector-tab]');
+  tabs.forEach((tab) => tab.addEventListener('click', () => {
+    const active = tab.dataset.sectorTab;
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.style.backgroundColor = on ? t.dataset.light! : 'transparent';
+      t.style.color = on ? t.dataset.color! : '#6b7280';
+      t.querySelector<HTMLElement>('[data-sector-indicator]')!.style.display = on ? '' : 'none';
+    });
+    document.querySelectorAll<HTMLElement>('[data-sector-panel]').forEach((panel) => {
+      panel.style.display = panel.dataset.sectorPanel === active ? '' : 'none';
+    });
+  }));
+</script>

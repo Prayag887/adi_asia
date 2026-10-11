@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-white font-body text-slate-700 antialiased; }
+  h1, h2, h3 { @apply font-display text-brand; }
+}

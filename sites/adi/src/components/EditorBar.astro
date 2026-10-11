@@ -1,0 +1,12 @@
+---
+import Icon from '@/components/Icon.astro';
+---
+<div data-editor-bar data-editor-ignore class="fixed bottom-0 inset-x-0 z-[60] border-t border-[#b8946a]/40 bg-[#0a1525]/95 px-4 py-3 backdrop-blur-md" style="display: none;">
+  <div class="mx-auto flex max-w-5xl items-center justify-between gap-4">
+    <p class="font-inter text-sm text-[#f8f6f1]/75"><Icon name="Pencil" class="mr-2 inline h-4 w-4 text-[#b8946a]" />Editing the live page — click any highlighted text to change it.</p>
+    <div class="flex gap-2">
+      <button type="button" data-editor-cancel class="rounded border border-[#f8f6f1]/25 px-4 py-2 text-sm text-[#f8f6f1] transition hover:border-[#f8f6f1]/60"><Icon name="X" class="mr-1 inline h-4 w-4" />Cancel</button>
+      <button type="button" data-editor-save class="rounded bg-[#b8946a] px-4 py-2 text-sm font-medium text-[#0a1525] transition hover:bg-[#c9a87a] disabled:opacity-70"><span data-icon-saving style="display: none;"><Icon name="LoaderCircle" class="mr-1 inline h-4 w-4 animate-spin" /></span><span data-icon-check><Icon name="Check" class="mr-1 inline h-4 w-4" /></span><span data-save-label>Save changes</span></button>
+    </div>
+  </div>
+</div>

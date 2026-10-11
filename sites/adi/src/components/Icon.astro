@@ -1,0 +1,20 @@
+---
+// Renders a Lucide icon as inline SVG at build time (same markup lucide-react produced).
+import * as icons from 'lucide';
+
+type IconNode = [string, Record<string, string | number>][];
+interface Props {
+  name: keyof typeof icons;
+  class?: string;
+  style?: string;
+  strokeWidth?: number;
+}
+
+const { name, class: className = '', style, strokeWidth = 2 } = Astro.props;
+const node = icons[name] as unknown as IconNode;
+const kebab = String(name).replace(/([a-z0-9])([A-Z])/g, '$1-$2').toLowerCase();
+const children = node
+  .map(([tag, attrs]) => `<${tag} ${Object.entries(attrs).map(([k, v]) => `${k}="${v}"`).join(' ')}></${tag}>`)
+  .join('');
+---
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width={strokeWidth} stroke-linecap="round" stroke-linejoin="round" class={`lucide lucide-${kebab} ${className}`.trim()} style={style} aria-hidden="true" set:html={children} />

@@ -1,0 +1,71 @@
+---
+import Icon from '@/components/Icon.astro';
+---
+<section data-section="hero" class="relative min-h-screen w-full overflow-hidden" style="background: linear-gradient(160deg, #0f1e33 0%, #1a2942 40%, #152238 100%);">
+  <canvas data-hero-particles class="absolute inset-0 w-full h-full" style="opacity: 0.7;"></canvas>
+
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute w-[600px] h-[600px] rounded-full opacity-20" style="top: -20%; right: -10%; background: radial-gradient(circle, rgba(193, 154, 107, 0.3) 0%, transparent 70%);"></div>
+    <div class="absolute w-[500px] h-[500px] rounded-full opacity-15" style="bottom: -15%; left: -5%; background: radial-gradient(circle, rgba(44, 95, 95, 0.4) 0%, transparent 70%);"></div>
+    <div class="absolute w-[400px] h-[400px] rounded-full opacity-10" style="top: 40%; left: 20%; background: radial-gradient(circle, rgba(193, 154, 107, 0.2) 0%, transparent 70%);"></div>
+    <div class="absolute w-96 h-96 rounded-full border border-gold/5" style="top: 20%; right: 15%;"></div>
+    <div class="absolute w-72 h-72 rounded-full border border-white/5" style="top: 25%; right: 20%;"></div>
+    <div class="absolute w-px h-40 bg-gradient-to-b from-transparent via-gold/20 to-transparent" style="top: 15%; left: 10%;"></div>
+    <div class="absolute w-px h-32 bg-gradient-to-b from-transparent via-gold/15 to-transparent" style="top: 60%; right: 8%;"></div>
+    <div class="absolute h-px w-24 bg-gradient-to-r from-transparent via-gold/15 to-transparent" style="top: 35%; left: 5%;"></div>
+  </div>
+
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0f1e33]/80"></div>
+
+  <div class="relative z-10 flex flex-col items-center justify-center min-h-[100svh] pt-28 pb-12 px-4 sm:px-6 lg:px-8 xl:px-12">
+    <div class="text-center max-w-4xl mx-auto">
+      <p class="font-cinzel text-[10px] tracking-[0.35em] text-gold uppercase mb-10 opacity-100 translate-y-0" style="text-shadow: 0 2px 20px rgba(193, 154, 107, 0.3);">Dialogue · Peace · Development · Education</p>
+      <h1 class="font-cormorant text-5xl sm:text-6xl lg:text-hero text-ivory font-bold leading-tight mb-10 opacity-100 translate-y-0">Building Lasting Peace<br /><span class="text-gold" style="text-shadow: 0 2px 30px rgba(193, 154, 107, 0.25);">Through Trusted Dialogue</span></h1>
+      <p class="font-garamond text-lg sm:text-xl text-ivory/80 max-w-2xl mx-auto leading-loose mb-14 opacity-100 translate-y-0">An independent platform advancing peace across Asia through mediation, sustained engagement, and context-driven solutions. We create trusted spaces for constructive dialogue away from political pressure.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-5 opacity-100 translate-y-0">
+        <a href="#our-work" class="btn-primary">Our Work</a>
+        <a href="#about" class="btn-secondary">Learn More</a>
+      </div>
+    </div>
+
+    <button type="button" data-scroll-to="#about" class="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-ivory/50 hover:text-gold transition-all duration-500 cursor-pointer group opacity-100" aria-label="Scroll to learn more">
+      <span class="font-cinzel text-[9px] tracking-[0.3em] uppercase">Scroll</span>
+      <Icon name="ChevronDown" class="w-5 h-5 group-hover:text-gold transition-colors" />
+    </button>
+  </div>
+</section>
+
+<script>
+  // Static particle field (drawn once, no animation loop).
+  const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-particles]');
+  const ctx = canvas?.getContext('2d');
+  if (canvas && ctx) {
+    const count = Math.min(60, Math.floor(window.innerWidth / 25));
+    const seeds = Array.from({ length: count }, () => [Math.random(), Math.random(), Math.random() * 2 + 0.5, Math.random() * 0.5 + 0.2]);
+    const draw = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const points = seeds.map(([x, y, radius, opacity]) => ({ x: x * canvas.width, y: y * canvas.height, radius, opacity }));
+      points.forEach((p, i) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(193, 154, 107, ${p.opacity})`;
+        ctx.fill();
+        if (i % 4 !== 0) return;
+        points.slice(i + 1).forEach((other, j) => {
+          if (j % 3 !== 0) return;
+          const distance = Math.hypot(p.x - other.x, p.y - other.y);
+          if (distance >= 140) return;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(other.x, other.y);
+          ctx.strokeStyle = `rgba(193, 154, 107, ${0.12 * (1 - distance / 140)})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        });
+      });
+    };
+    draw();
+    window.addEventListener('resize', draw);
+  }
+</script>

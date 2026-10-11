@@ -1,0 +1,185 @@
+---
+import Icon from '@/components/Icon.astro';
+
+const points = [
+  { cx: 200, cy: 200, label: 'Kathmandu', primary: true },
+  { cx: 270, cy: 290, label: 'Afghanistan' },
+  { cx: 100, cy: 160, label: 'Myanmar' },
+  { cx: 340, cy: 230, label: 'Nepal' },
+];
+const info = [
+  { icon: 'MapPin', label: 'Office', value: 'Suryabinayak 4, Bhaktapur\nNepal' },
+  { icon: 'Mail', label: 'Email', value: 'asiacan@asiacan.org', href: 'mailto:asiacan@asiacan.org' },
+  { icon: 'Globe', label: 'Coverage', value: 'Nepal · Myanmar · Afghanistan' },
+] as const;
+const subjects = [
+  ['partnership', 'Partnership Inquiry'],
+  ['asgpp', 'ASGPP / Academic Programs'],
+  ['mediation', 'Mediation & Dialogue Work'],
+  ['media', 'Media & Press'],
+  ['other', 'Other'],
+];
+const inputBase = 'w-full bg-white/5 border border-[#f8f6f1]/10 rounded-xl px-4 py-3 font-inter text-[15px] text-[#f8f6f1] placeholder-[#f8f6f1]/30 outline-none transition-all duration-300 focus:border-[#b8946a]/60 focus:bg-white/8 focus:shadow-[0_0_0_3px_rgba(184,148,106,0.08)]';
+const labelClass = 'font-cinzel text-[9px] tracking-[0.2em] uppercase text-[#b8946a]';
+---
+<section id="contact" data-section="contact" class="relative py-28 lg:py-36 overflow-hidden" style="background: linear-gradient(160deg, #0a1525 0%, #0f1e33 50%, #0a1525 100%);">
+  <div class="absolute inset-0 pointer-events-none" style={`background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); opacity: 0.018;`}></div>
+  <div class="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(184,148,106,0.06) 0%, transparent 70%);"></div>
+  <div class="absolute -bottom-24 -left-24 w-[400px] h-[400px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(30,64,64,0.18) 0%, transparent 70%);"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+    <div class="text-center mb-20" style="opacity: 1; transform: translateY(0);">
+      <span class="font-cinzel text-[10px] tracking-[0.3em] uppercase" style="color: #b8946a;">Reach Out</span>
+      <h2 class="font-cormorant text-5xl sm:text-6xl lg:text-7xl font-light text-[#f8f6f1] mt-4 mb-5 leading-tight">Get In Touch</h2>
+      <div class="flex items-center justify-center gap-4">
+        <div class="h-px w-16" style="background: linear-gradient(to right, transparent, rgba(184,148,106,0.4));"></div>
+        <p class="font-inter text-base text-[#f8f6f1]/55 max-w-lg">We welcome inquiries about our work, partnership opportunities, and academic programs.</p>
+        <div class="h-px w-16" style="background: linear-gradient(to left, transparent, rgba(184,148,106,0.4));"></div>
+      </div>
+    </div>
+
+    <div class="grid lg:grid-cols-2 gap-12 xl:gap-20 items-start">
+      <div class="space-y-12" style="opacity: 1; transform: translateX(0);">
+        <div class="flex justify-center lg:justify-start">
+          <div class="relative w-full aspect-square max-w-sm mx-auto select-none">
+            {[1, 0.72, 0.48].map((scale) => (
+              <div class="absolute inset-0 rounded-full border border-[#b8946a]/10" style={`transform: scale(${scale}); top: 50%; left: 50%; width: 100%; height: 100%; margin-top: -50%; margin-left: -50%;`}></div>
+            ))}
+            <svg viewBox="0 0 400 400" class="absolute inset-0 w-full h-full">
+              <defs>
+                <radialGradient id="orbGrad" cx="50%" cy="50%" r="50%">
+                  <stop offset="0%" stop-color="#b8946a" stop-opacity="0.15"></stop>
+                  <stop offset="100%" stop-color="#0f1e33" stop-opacity="0"></stop>
+                </radialGradient>
+                <filter id="dot-glow">
+                  <feGaussianBlur stdDeviation="3" result="blur"></feGaussianBlur>
+                  <feMerge><feMergeNode in="blur"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge>
+                </filter>
+              </defs>
+              <circle cx="200" cy="200" r="140" fill="url(#orbGrad)"></circle>
+              {points.slice(1).map((p) => <line x1="200" y1="200" x2={p.cx} y2={p.cy} stroke="#b8946a" stroke-width="0.75" stroke-opacity="0.25" stroke-dasharray="5 5"></line>)}
+              {points.slice(1).map((p) => <circle cx={p.cx} cy={p.cy} r="5" fill="#1a2942" stroke="#b8946a" stroke-width="1" stroke-opacity="0.5"></circle>)}
+              <circle cx="200" cy="200" r="10" fill="#b8946a" filter="url(#dot-glow)"></circle>
+              <circle cx="200" cy="200" r="20" fill="none" stroke="#b8946a" stroke-width="1" stroke-opacity="0.4"></circle>
+            </svg>
+            {points.map((p) => (
+              <div class="absolute text-center" style={`left: ${(p.cx / 400) * 100}%; top: ${(p.cy / 400) * 100}%; transform: translate(-50%, -140%);`}>
+                <span class={`font-cinzel text-[9px] tracking-widest uppercase whitespace-nowrap ${p.primary ? 'text-[#b8946a]' : 'text-[#f8f6f1]/40'}`}>{p.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="space-y-7 pl-2">
+          {info.map((item) => {
+            const content = (
+              <div class="flex items-start gap-4 group">
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110" style="background: rgba(184, 148, 106, 0.12); border: 1px solid rgba(184, 148, 106, 0.2);">
+                  <Icon name={item.icon} class="w-5 h-5" style="color: #b8946a;" />
+                </div>
+                <div>
+                  <p class="font-cinzel text-[9px] tracking-[0.2em] uppercase mb-1" style="color: #b8946a;">{item.label}</p>
+                  <p class="font-inter text-[15px] text-[#f8f6f1] leading-snug group-hover:text-[#b8946a] transition-colors duration-300">{item.value}</p>
+                </div>
+              </div>
+            );
+            return (
+              <div class="transition-all duration-700" style="opacity: 1; transform: translateX(0);">
+                {'href' in item ? <a href={item.href}>{content}</a> : content}
+              </div>
+            );
+          })}
+        </div>
+
+        <div class="h-px w-full transition-all duration-1000" style="background: linear-gradient(to right, rgba(184,148,106,0.3), transparent); opacity: 1;"></div>
+        <p class="font-cormorant text-2xl font-light italic text-[#f8f6f1]/40 leading-relaxed transition-all duration-700" style="opacity: 1;">"Dialogue, when sustained with patience,<br />becomes the architecture of peace."</p>
+      </div>
+
+      <div style="opacity: 1; transform: translateX(0);">
+        <div class="rounded-2xl p-8 sm:p-10" style="background: rgba(248,246,241,0.035); border: 1px solid rgba(248,246,241,0.08); backdrop-filter: blur(16px); box-shadow: 0 32px 80px rgba(0,0,0,0.3);">
+          <div data-contact-sent data-editor-ignore class="flex flex-col items-center justify-center py-16 text-center gap-6" style="display: none;">
+            <div class="w-16 h-16 rounded-full flex items-center justify-center" style="background: rgba(184,148,106,0.15); border: 1px solid rgba(184,148,106,0.35);">
+              <Icon name="Send" class="w-7 h-7" style="color: #b8946a;" />
+            </div>
+            <h3 class="font-cormorant text-3xl text-[#f8f6f1] font-light">Message Sent</h3>
+            <p class="font-inter text-[15px] text-[#f8f6f1]/55 max-w-xs">Thank you for reaching out. We'll be in touch with you shortly.</p>
+            <button type="button" data-contact-again class="font-cinzel text-[10px] tracking-[0.2em] uppercase text-[#b8946a] hover:text-[#c9a87a] transition-colors duration-300 mt-2">Send another</button>
+          </div>
+
+          <form data-contact-form class="space-y-5">
+            <div class="mb-8">
+              <h3 class="font-cormorant text-3xl sm:text-4xl text-[#f8f6f1] font-light mb-1">Send a Message</h3>
+              <p class="font-inter text-[13px] text-[#f8f6f1]/40">We read every message personally.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+              <div class="space-y-1.5">
+                <label class={labelClass}>Name</label>
+                <input name="name" placeholder="Your full name" required class={inputBase} />
+              </div>
+              <div class="space-y-1.5">
+                <label class={labelClass}>Email</label>
+                <input name="email" type="email" placeholder="your@email.com" required class={inputBase} />
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <label class={labelClass}>Subject</label>
+              <select name="subject" required class={inputBase + ' cursor-pointer'} style="appearance: none;">
+                <option value="" disabled selected style="background: #0f1e33;">Select a topic…</option>
+                {subjects.map(([value, label]) => <option value={value} style="background: #0f1e33;">{label}</option>)}
+              </select>
+            </div>
+            <div class="space-y-1.5">
+              <label class={labelClass}>Message</label>
+              <textarea name="message" rows="5" placeholder="Tell us about your inquiry…" required class={inputBase + ' resize-none'}></textarea>
+            </div>
+            <button type="submit" class="w-full flex items-center justify-center gap-3 py-4 rounded-xl font-inter font-medium text-[15px] transition-all duration-300 disabled:opacity-60 hover:scale-[1.02] active:scale-[0.98]" style="background: linear-gradient(135deg, #b8946a 0%, #a08055 100%); color: white; box-shadow: 0 4px 20px rgba(184,148,106,0.3);">
+              <span data-idle class="contents">Send Message<Icon name="ChevronRight" class="w-4 h-4 transition-transform group-hover:translate-x-1" /></span>
+              <span data-busy class="contents" style="display: none;"><svg class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>Sending…</span>
+            </button>
+            <p class="font-inter text-[12px] text-center text-[#f8f6f1]/25 pt-1">Or email us directly at <a href="mailto:asiacan@asiacan.org" class="text-[#b8946a]/60 hover:text-[#b8946a] transition-colors">asiacan@asiacan.org</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { sendContactMessage } from '@/lib/api';
+
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]')!;
+  const sent = document.querySelector<HTMLElement>('[data-contact-sent]')!;
+  const submit = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+  const setBusy = (busy: boolean) => {
+    submit.disabled = busy;
+    submit.style.background = busy ? 'rgba(184,148,106,0.5)' : 'linear-gradient(135deg, #b8946a 0%, #a08055 100%)';
+    submit.querySelector<HTMLElement>('[data-idle]')!.style.display = busy ? 'none' : '';
+    submit.querySelector<HTMLElement>('[data-busy]')!.style.display = busy ? '' : 'none';
+  };
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    setBusy(true);
+    try {
+      await sendContactMessage({
+        name: String(data.get('name')),
+        email: String(data.get('email')),
+        subject: String(data.get('subject')),
+        message: String(data.get('message')),
+      });
+      form.reset();
+      form.style.display = 'none';
+      sent.style.display = '';
+    } catch (error) {
+      window.alert(error instanceof Error ? error.message : 'Your message could not be sent. Please email us instead.');
+    } finally {
+      setBusy(false);
+    }
+  });
+
+  document.querySelector('[data-contact-again]')!.addEventListener('click', () => {
+    sent.style.display = 'none';
+    form.style.display = '';
+  });
+</script>

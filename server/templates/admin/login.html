@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Sign in · Folio</title>
+  <link rel="stylesheet" href="/admin/static/admin.css">
+</head>
+<body class="center">
+  <form method="post" action="/admin/login" class="card login">
+    <h1>Folio</h1>
+    <p class="muted-text">Owner console</p>
+    {% if let Some(err) = flash.err %}<div class="flash err">{{ err }}</div>{% endif %}
+    <label>Email<input name="email" type="email" required autocomplete="username" autofocus></label>
+    <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
+    <button class="primary">Sign in</button>
+  </form>
+</body>
+</html>
