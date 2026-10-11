@@ -1,0 +1,19 @@
+#!/usr/bin/expect -f
+# Supply the local deployment password without putting it in process arguments.
+set timeout 300
+log_user 0
+spawn -noecho {*}$argv
+expect {
+    -nocase -re {password: *$} {
+        send -- "$env(DEPLOY_PASSWORD)\r"
+        exp_continue
+    }
+    eof {
+        set result [wait]
+        exit [lindex $result 3]
+    }
+    timeout {
+        puts stderr "Deployment command timed out."
+        exit 1
+    }
+}

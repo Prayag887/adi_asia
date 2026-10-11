@@ -1,0 +1,4 @@
+# Copy to .deploy and chmod 600 .deploy. Never commit credentials.
+DEPLOY_HOST='root@163.223.98.6'
+DEPLOY_PORT='41447'
+DEPLOY_PASSWORD=''

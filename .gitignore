@@ -9,6 +9,7 @@ dist/
 
 # Secrets
 .env
+.deploy
 !.env.example
 
 .DS_Store

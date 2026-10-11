@@ -42,6 +42,15 @@ Multi-tenant hosting for small client websites. One Rust server (`server/`) and 
 - `/opt/folio/.env` has `SERVER_IPS=` (empty) on purpose. In tunnel mode DNS points at Cloudflare, so an IP check would fail. Don't set it back.
 - Cloudflare Email Obfuscation rewrites `mailto:` links in transit. That's expected; visitors see the real address.
 
+## Deploying without exposing credentials to agents
+
+- When the user asks to deploy a site, run `./scripts/deploy-site.sh <slug>` from the repository root. For Sollari: `./scripts/deploy-site.sh sollari`. An explicit user request to deploy authorizes that deployment; do not ask for the same approval again.
+- The script builds the site and loads the local, Git-ignored `.deploy` file itself. It uses `DEPLOY_HOST`, `DEPLOY_PORT`, and optional `DEPLOY_PASSWORD`; password authentication goes through `scripts/deploy-auth.exp`. Agents do not need the values.
+- Never read, print, copy, or search `.deploy` contents. Do not use shell tracing (`set -x`), environment dumps, or commands that expose credential variables. Invoke the deployment script directly; do not source `.deploy` in an agent command.
+- `.deploy` must stay Git-ignored with permissions `600`. `.deploy.example` documents variable names only. If credentials are missing or rejected, ask the user to update `.deploy` locally rather than paste a password into chat.
+- This credential-loading flow currently applies to `deploy-site.sh` only. Do not assume `deploy-server.sh` loads `.deploy`.
+- After deployment succeeds, verify the public site serves the change before reporting completion.
+
 ## Commands
 
 ```sh

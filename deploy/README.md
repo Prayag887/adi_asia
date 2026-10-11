@@ -8,3 +8,5 @@ How Folio runs on a server. Pick **one** setup.
 | [`caddy/`](caddy/) | Folio has the server to itself. Caddy owns 80/443 and issues HTTPS automatically for any client domain (on-demand TLS). | Not used yet |
 
 Day-to-day deploys don't need these files. Use `scripts/deploy-site.sh` and `scripts/deploy-server.sh`.
+
+For local password deployment, copy `.deploy.example` to `.deploy` in the repository root, fill in the credentials, and run `chmod 600 .deploy`. The file is Git-ignored. Install `expect` if it is not already available, then run `./scripts/deploy-site.sh sollari`. Without a password, the script uses normal SSH key authentication.
