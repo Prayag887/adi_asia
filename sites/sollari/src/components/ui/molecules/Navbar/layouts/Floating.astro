@@ -13,42 +13,18 @@ export interface Props {
 const { theme = "light", locale = "pl" } = Astro.props;
 const headerData = getNovaCopy(locale).navigation;
 
-// Why: floating navbar has two visual states. It's at the top of the page
-// with a transparent overlay embedded in the hero (absolute), and it goes on the scroll
-// fixed bar with background and blur. Colors depend on theme: light (light theme,
-// dark text) and dark/transparent (dark hero, white text).
+// A single fixed header keeps every navigation link available while scrolling.
 const isDark = theme === "dark" || theme === "transparent";
 
-// Why: there can be no floating on subpages without a hero at the top
-// transparent overlay, because the text would be lost against the background of the section. Theme "dark"
-// it immediately renders a fixed bar (like on a homepage after a scroll) and skips it
-// second header so that there is no duplicate navigation.
-const isSolid = theme === "dark";
-
-// Static classes (overlay on hero) depending on the theme
-const staticTextClass = isDark ? "text-white" : "text-brand-dark";
-// Fixed classes (after scrolling) depending on the theme
 const fixedShellClass = isDark
 	? "border-white/10 bg-brand-dark/95 text-white shadow-lg shadow-black/20"
 	: "border-brand-dark/10 bg-[var(--ui-bg-page)]/95 text-brand-dark shadow-lg shadow-black/5";
 ---
 
-<!-- Dlaczego: pierwsza nawigacja jest przezroczystym overlayem na hero (absolute),
-     so hero starts at the very top of the page and the navbar looks like part of it.
-     The second one (fixed) appears only after scrolling and enters from the top, thanks to which
-     permanent access to the menu does not take up space on the first screen.
-     W trybie solid (theme=dark, podstrony bez hero) pierwszy header jest od razu
-     fixed and dark, and the second one is not rendered at all (isSolid).-->
 <header
 	data-site-header
-	data-site-header-static
 	transition:animate="none"
-	class:list={[
-		"left-0 top-0 w-full",
-		isSolid
-			? `fixed z-[1000] border-b ${fixedShellClass}`
-			: `absolute z-[100] bg-transparent ${staticTextClass}`,
-	]}
+	class:list={["fixed left-0 top-0 z-[1000] w-full border-b", fixedShellClass]}
 >
 	<div class="ui-container">
 		<div class="flex items-center justify-between gap-2 py-3 sm:gap-4 sm:py-4 lg:gap-6 lg:py-5" data-nav-inner>
@@ -80,106 +56,44 @@ const fixedShellClass = isDark
 	</div>
 </header>
 
-{!isSolid && (
-<header
-	data-site-header-fixed
-	transition:animate="none"
-	aria-hidden="true"
-	class:list={[
-		"pointer-events-none fixed top-0 left-0 z-[1000] w-full -translate-y-full opacity-0 shadow-lg backdrop-blur-md will-change-transform border-b",
-		fixedShellClass,
-	]}
->
-	<div class="ui-container">
-		<div class="flex items-center justify-between gap-2 py-2.5 sm:gap-4 sm:py-3 lg:gap-6 lg:py-3.5" data-nav-inner>
-			<a href={getNovaNavigationPath("/", locale)} class="nova-site-logo relative z-[1010] flex min-w-0 shrink-0 items-center">
-				<Logo variant={isDark ? "light" : "dark"} density="compact" />
-			</a>
-
-			<nav class="hidden min-w-0 flex-1 items-center justify-center gap-5 lg:flex xl:gap-8">
-				{headerData.menu.map((item) => (
-					<a href={getNovaNavigationPath(item.href, locale)} class="ui-nav-bar-link shrink-0 opacity-75 transition-opacity hover:opacity-100">
-						{item.label}
-					</a>
-				))}
-			</nav>
-
-			<div class="relative z-[1010] flex shrink-0 items-center gap-2 sm:gap-3">
-				<a href={formatInternalLink(headerData.cta.href)} class="ui-button ui-button-primary ui-nav-cta hidden sm:flex">
-					<span class="ui-button-text-wrap">
-						<span class="ui-button-text-default">{headerData.cta.label}</span>
-						<span class="ui-button-text-hover">{headerData.cta.hoverLabel}</span>
-					</span>
-				</a>
-				<MenuToggle locale={locale} />
-			</div>
-		</div>
-	</div>
-</header>
-)}
-
 <style>
-	/* Why: without an explicit transition, the bar would jump out instead
-    drive in. We animate translate (entering from the top) and opacity (appearing),
-    using the translate property from Tailwind v4 instead of transform to
-    matched the -translate-y-full class.*/
-	[data-site-header-fixed] {
-		transition:
-			translate 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-			opacity 0.35s ease-out;
-	}
 
-	[data-site-header-fixed].is-visible {
-		opacity: 1;
-		pointer-events: auto;
-		translate: 0 0;
-	}
-
-	:global(html[data-theme="nova"] header[data-site-header-static]),
-	:global(html[data-theme="nova"] header[data-site-header-fixed]) {
-		left: 50%;
-		width: min(calc(100% - 2rem), 90rem);
-		transform: translateX(-50%);
+	:global(html[data-theme="nova"] header[data-site-header]) {
+		left: 0;
+		width: 100%;
+		transform: none;
 		border-color: transparent;
 		background: var(--color-surface);
 		color: var(--color-on-surface);
 		box-shadow: none;
 	}
 
-	:global(html[data-theme="nova"] header[data-site-header-static]) {
-		border-radius: var(--ui-radius-xl) var(--ui-radius-xl) 0 0;
+	:global(html[data-theme="nova"] header[data-site-header]) {
+		border-radius: 0;
 	}
 
-	:global(html[data-theme="nova"] header[data-site-header-fixed]) {
-		top: 2.75rem;
-	}
 
-	:global(html[data-theme="nova"] header[data-site-header-static] [data-nav-inner]),
-	:global(html[data-theme="nova"] header[data-site-header-fixed] [data-nav-inner]) {
+	:global(html[data-theme="nova"] header[data-site-header] [data-nav-inner]) {
 		padding-top: 0.8rem;
 		padding-bottom: 0.8rem;
 	}
 
-	:global(html[data-theme="nova"] header[data-site-header-static] .ui-container),
-	:global(html[data-theme="nova"] header[data-site-header-fixed] .ui-container) {
+	:global(html[data-theme="nova"] header[data-site-header] .ui-container) {
 		max-width: none;
 		padding-inline: clamp(1.5rem, 5vw, 5rem);
 	}
 
-	:global(html[data-theme="nova"] header[data-site-header-static]),
-	:global(html[data-theme="nova"] header[data-site-header-fixed]) {
+	:global(html[data-theme="nova"] header[data-site-header]) {
 		left: 0;
 		width: 100%;
 		transform: none;
 	}
 
-	:global(html[data-theme="nova"] header[data-site-header-static] nav),
-	:global(html[data-theme="nova"] header[data-site-header-fixed] nav) {
+	:global(html[data-theme="nova"] header[data-site-header] nav) {
 		gap: clamp(1rem, 2vw, 2.25rem);
 	}
 
-	:global(html[data-theme="nova"] header[data-site-header-static] .ui-nav-bar-link),
-	:global(html[data-theme="nova"] header[data-site-header-fixed] .ui-nav-bar-link) {
+	:global(html[data-theme="nova"] header[data-site-header] .ui-nav-bar-link) {
 		font-family: var(--font-sans);
 		font-size: 1rem;
 		font-weight: 600;
@@ -188,14 +102,12 @@ const fixedShellClass = isDark
 	}
 
 	@media (min-width: 1280px) {
-		:global(html[data-theme="nova"] header[data-site-header-static] .ui-nav-bar-link),
-		:global(html[data-theme="nova"] header[data-site-header-fixed] .ui-nav-bar-link) {
+		:global(html[data-theme="nova"] header[data-site-header] .ui-nav-bar-link) {
 			font-size: 1.0625rem;
 		}
 	}
 
-	:global(html[data-theme="nova"] header[data-site-header-static] .ui-nav-cta),
-	:global(html[data-theme="nova"] header[data-site-header-fixed] .ui-nav-cta) {
+	:global(html[data-theme="nova"] header[data-site-header] .ui-nav-cta) {
 		border-radius: 9999px;
 		padding: 0.7rem 1.2rem;
 		background: var(--color-brand-dark);

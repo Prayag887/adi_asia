@@ -23,11 +23,6 @@
   // intercepts wheel and touch even when anchor has zero duration.
   if (isReducedMotion) return;
 
-  function getHeaderOffset() {
-    var header = document.querySelector('[data-site-header]');
-    return header ? Math.ceil(header.getBoundingClientRect().height) + 16 : 0;
-  }
-
   function getSameDocumentHash(href) {
     if (!href || href === '#') return null;
 
@@ -57,7 +52,7 @@
     if (!target || !currentLenis) return false;
 
     currentLenis.scrollTo(target, {
-      offset: -getHeaderOffset(),
+      // Lenis already accounts for the target's CSS scroll-margin-top.
       duration: immediate || isReducedMotion ? 0 : 1.2,
       immediate: immediate || isReducedMotion,
     });
