@@ -1,0 +1,37 @@
+{
+  "tagline": "Pricing",
+  "title": "Clear pricing, no surprises",
+  "description": "Company websites have one simple yearly price. Everything else is scoped with you and priced before we start.",
+  "plans": [
+    {
+      "name": "Company website",
+      "price": "NPR 4,000",
+      "priceNote": "per year + domain cost",
+      "description": "A website designed and built around your business, then deployed and hosted by us.",
+      "features": [
+        "Designed and built to your needs",
+        "Deployment and hosting included",
+        "Fast on phones and desktops",
+        "Domain billed separately at cost"
+      ],
+      "ctaLabel": "Start your website",
+      "ctaHref": "#contact",
+      "highlighted": true
+    },
+    {
+      "name": "E-commerce, mobile and custom software",
+      "price": "Let's talk",
+      "priceNote": "",
+      "description": "Every product is different, so we agree the scope and a fixed price with you before any work begins.",
+      "features": [
+        "E-commerce apps",
+        "Android and iOS apps",
+        "Custom web apps and platforms",
+        "Hosting and maintenance options"
+      ],
+      "ctaLabel": "Discuss your project",
+      "ctaHref": "#contact",
+      "highlighted": false
+    }
+  ]
+}

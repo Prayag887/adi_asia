@@ -1,0 +1,13 @@
+{
+  "defaultTitle": "Sollari: e-commerce, company websites and mobile apps",
+  "defaultDescription": "Sollari builds e-commerce apps, company portfolio websites and custom web and mobile apps.",
+  "defaultOgImage": "/og-image.png",
+  "index": true,
+  "follow": true,
+  "analytics": {
+    "googleAnalyticsId": "",
+    "googleTagManagerId": "",
+    "facebookPixelId": "",
+    "clarityId": ""
+  }
+}

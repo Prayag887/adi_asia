@@ -1,0 +1,112 @@
+---
+// Why: Sollari's "Our stack" section. Technology names with their official logos
+// (Simple Icons, CC0) scroll horizontally as large type. Two identical groups make the
+// loop seamless; the copy is aria-hidden. Pauses on hover and stays static for
+// visitors who prefer reduced motion.
+import Section from "@components/ui/layout/Section.astro";
+import Container from "@components/ui/layout/Container.astro";
+import Heading from "@components/ui/atoms/Heading.astro";
+import Text from "@components/ui/atoms/Text.astro";
+import * as simpleIcons from "simple-icons";
+import jsonData from "@data/sections/nova-stack.json";
+import { ACTIVE_TEMPLATE } from "@config/template";
+
+interface Technology { name: string; icon: string }
+interface Props { title?: string; description?: string; technologies?: Technology[]; class?: string }
+
+const props = Astro.props as Props;
+const fallback = ACTIVE_TEMPLATE === "nova" ? undefined : jsonData;
+const title = props.title ?? fallback?.title;
+const description = props.description ?? fallback?.description;
+const technologies: Technology[] = props.technologies ?? fallback?.technologies ?? [];
+
+type SimpleIcon = { title: string; hex: string; path: string };
+const icons = simpleIcons as unknown as Record<string, SimpleIcon | undefined>;
+const items = technologies.map((tech) => ({ ...tech, logo: icons[tech.icon] }));
+---
+
+<Section id="stack" tone="page" class:list={["overflow-hidden py-16 md:py-24", props.class]}>
+  <Container>
+    <div class="mx-auto max-w-3xl text-center" data-motion-sequence="viewport" data-motion-profile="soft">
+      <Heading tag="h2" variant="section-title">{title}</Heading>
+      {description && <Text variant="lead" class="mt-4">{description}</Text>}
+    </div>
+  </Container>
+
+  <div class="stack-marquee mt-12 md:mt-16" aria-label={title}>
+    <div class="stack-marquee__track">
+      {[0, 1].map((copy) => (
+        <ul class="stack-marquee__group" aria-hidden={copy === 1 ? "true" : undefined}>
+          {items.map((item) => (
+            <li class="stack-marquee__item">
+              {item.logo && (
+                <svg class="stack-marquee__logo" viewBox="0 0 24 24" role="img" aria-hidden="true" style={`fill: #${item.logo.hex}`}>
+                  <path d={item.logo.path} />
+                </svg>
+              )}
+              <span>{item.name}</span>
+            </li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+</Section>
+
+<style>
+  .stack-marquee {
+    mask-image: linear-gradient(to right, transparent 0, black 8%, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0, black 8%, black 92%, transparent 100%);
+  }
+
+  .stack-marquee__track {
+    display: flex;
+    width: max-content;
+    animation: stack-marquee-scroll 32s linear infinite;
+  }
+
+  .stack-marquee:hover .stack-marquee__track {
+    animation-play-state: paused;
+  }
+
+  .stack-marquee__group {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: clamp(2.5rem, 6vw, 5.5rem);
+    margin: 0;
+    padding: 0 clamp(1.25rem, 3vw, 2.75rem);
+    list-style: none;
+  }
+
+  .stack-marquee__item {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+    white-space: nowrap;
+    font-size: clamp(2rem, 5.5vw, 4.75rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: var(--color-brand-dark, #161616);
+  }
+
+  .stack-marquee__logo {
+    width: 0.85em;
+    height: 0.85em;
+    flex-shrink: 0;
+  }
+
+  @keyframes stack-marquee-scroll {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(-50%, 0, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .stack-marquee { mask-image: none; -webkit-mask-image: none; }
+    .stack-marquee__track { animation: none; width: auto; justify-content: center; }
+    .stack-marquee__group { flex-wrap: wrap; justify-content: center; row-gap: 1.5rem; }
+    .stack-marquee__group[aria-hidden="true"] { display: none; }
+    .stack-marquee__item { font-size: clamp(1.5rem, 4vw, 2.5rem); }
+  }
+</style>

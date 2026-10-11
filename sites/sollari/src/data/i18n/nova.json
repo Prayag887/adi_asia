@@ -1,0 +1,310 @@
+{
+  "en": {
+    "page": {
+      "title": "Sollari: e-commerce, company websites and mobile apps",
+      "description": "Sollari builds e-commerce apps, company portfolio websites and custom web and mobile apps with Flutter, Rust, Kotlin Multiplatform, Next.js, React, Astro and Django.",
+      "heading": "Web and mobile apps built to last"
+    },
+    "navigation": {
+      "menu": [
+        {
+          "label": "Work",
+          "href": "#work"
+        },
+        {
+          "label": "Services",
+          "href": "#services"
+        },
+        {
+          "label": "Stack",
+          "href": "#stack"
+        },
+        {
+          "label": "Pricing",
+          "href": "#pricing"
+        },
+        {
+          "label": "Reviews",
+          "href": "#reviews"
+        }
+      ],
+      "cta": {
+        "label": "Start a project",
+        "hoverLabel": "Let's talk",
+        "href": "#contact"
+      },
+      "aria": {
+        "menuOpen": "Open navigation menu",
+        "menuClose": "Close menu",
+        "menuExpand": "Expand submenu",
+        "navMain": "Main navigation",
+        "drawer": "Navigation menu"
+      }
+    },
+    "sections": {
+      "nova-hero-wireframe": {
+        "eyebrow": "E-COMMERCE / WEBSITES / MOBILE APPS",
+        "heading": "We build web and mobile apps for",
+        "headingAccent": "growing businesses",
+        "description": "From online stores to company websites and custom mobile apps, Sollari designs, builds and runs the software your business depends on.",
+        "primaryCTA": {
+          "label": "Start a project",
+          "href": "#contact"
+        },
+        "secondaryCTA": {
+          "label": "See our work",
+          "href": "#work"
+        },
+        "trustedBy": "Trusted by",
+        "trustItems": [
+          "Asia Dialogue Initiative",
+          "Oji International",
+          "Door2Door"
+        ],
+        "image": "/assets/images/sollari/hero-work.webp",
+        "imageAlt": "Phone screens of Oji International, Door2Door and Asia Dialogue Initiative, built by Sollari",
+        "stats": [
+          {
+            "value": "7",
+            "label": "Core technologies"
+          },
+          {
+            "value": "3",
+            "label": "Products live"
+          },
+          {
+            "value": "2",
+            "label": "Platforms: web and mobile"
+          },
+          {
+            "value": "24/7",
+            "label": "Uptime monitoring"
+          }
+        ]
+      },
+      "nova-projects": {
+        "title": "Work that is live and in use",
+        "description": "A few of the products we have designed, built and launched. Each one is in production and serving real customers today.",
+        "linkLabel": "Start your project",
+        "linkHref": "#contact",
+        "items": [
+          {
+            "category": "E-commerce",
+            "title": "Door2Door e-commerce",
+            "image": "/assets/images/sollari/project-door2door.webp",
+            "alt": "Door2Door online store home page",
+            "href": "https://door2door.sollari.app/en/door2door-nepal"
+          },
+          {
+            "category": "Company website",
+            "title": "Oji International",
+            "image": "/assets/images/sollari/project-oji.webp",
+            "alt": "Oji International Language Center website",
+            "href": "https://ojiintl.com/"
+          },
+          {
+            "category": "Organisation website",
+            "title": "Asia Dialogue Initiative",
+            "image": "/assets/images/sollari/project-adi.webp",
+            "alt": "Asia Dialogue Initiative website",
+            "href": "https://asiacan.sollari.app/"
+          }
+        ]
+      },
+      "nova-services": {
+        "title": "What we build",
+        "description": "Design, development, launch and hosting from one team.",
+        "linkLabel": "Start a project",
+        "linkHref": "#contact",
+        "items": [
+          {
+            "number": "01.",
+            "icon": "shopping-cart",
+            "title": "E-commerce apps",
+            "description": "Online stores your customers enjoy using, with catalogue, cart, payments and orders, and an admin your team can run every day."
+          },
+          {
+            "number": "02.",
+            "icon": "browser",
+            "title": "Company websites",
+            "description": "A website designed around your business: fast on every phone, easy to update, and built and hosted from NPR 4,000 a year."
+          },
+          {
+            "number": "03.",
+            "icon": "device-mobile",
+            "title": "Mobile apps",
+            "description": "Android and iOS apps from a single Flutter or Kotlin Multiplatform codebase, so you launch on both stores for one budget."
+          },
+          {
+            "number": "04.",
+            "icon": "code",
+            "title": "Custom web apps",
+            "description": "Dashboards, booking systems and internal tools on Rust or Django backends that stay fast as your business grows."
+          }
+        ]
+      },
+      "faq3": {
+        "title": "Frequently asked questions",
+        "description": "What to expect when you work with Sollari.",
+        "tagline": "FAQ",
+        "items": [
+          {
+            "q": "What kinds of projects do you take on?",
+            "a": "E-commerce apps, company and portfolio websites, mobile apps for Android and iOS, and custom web platforms such as dashboards, booking systems and internal tools."
+          },
+          {
+            "q": "Which technologies do you use?",
+            "a": "Flutter and Kotlin Multiplatform for mobile, Next.js, React and Astro for the web, and Rust or Django on the backend. We choose per project based on what it needs."
+          },
+          {
+            "q": "How much does a company website cost?",
+            "a": "NPR 4,000 per year plus the cost of your domain. That covers building the site to your needs and deploying and hosting it. E-commerce, mobile and custom software are priced per project after we agree the scope."
+          },
+          {
+            "q": "Can you host and maintain the product after launch?",
+            "a": "Yes. We can host your site or app on our own infrastructure, monitor it and keep it updated, or hand it over to your team with documentation."
+          },
+          {
+            "q": "How do we get started?",
+            "a": "Send us a short description of your project using the form below. We will reply to discuss scope, timeline and the best way to build it."
+          }
+        ]
+      },
+      "testimonial-v2": {
+        "title": "Reviews that say more",
+        "description": "What the people we have built for say about working with us.",
+        "tagline": "Client reviews",
+        "avatarAltPrefix": "Photo of",
+        "items": [
+          {
+            "quote": "Sollari designed and built our landing page. It presents our work clearly, loads quickly even on slow connections, and our team can update the text and publish articles ourselves.",
+            "author": "Tika Prasad Dhakal",
+            "initials": "TD",
+            "role": "Director, Asian Dialogue Initiative"
+          },
+          {
+            "quote": "Sollari built Door2Door from the ground up, from the storefront and catalogue to checkout. It is fast on mobile, which is where most of our customers shop.",
+            "author": "Saurav Sharma",
+            "initials": "SS",
+            "role": "Founder, Door2Door"
+          },
+          {
+            "quote": "Our website gives students a clear picture of our classes, visa services and results. Sollari understood what our students need to see and delivered a site we are happy to share with every new enquiry.",
+            "author": "Mohan Mani Gautam",
+            "initials": "MG",
+            "role": "Director, Oji International"
+          }
+        ]
+      },
+      "nova-stack": {
+        "title": "Our stack",
+        "description": "Proven tools, chosen per project, so what we build stays fast, secure and easy to maintain.",
+        "technologies": [
+          {
+            "name": "Flutter",
+            "icon": "siFlutter"
+          },
+          {
+            "name": "Kotlin Multiplatform",
+            "icon": "siKotlin"
+          },
+          {
+            "name": "Rust",
+            "icon": "siRust"
+          },
+          {
+            "name": "Next.js",
+            "icon": "siNextdotjs"
+          },
+          {
+            "name": "React",
+            "icon": "siReact"
+          },
+          {
+            "name": "Astro",
+            "icon": "siAstro"
+          },
+          {
+            "name": "Django",
+            "icon": "siDjango"
+          }
+        ]
+      },
+      "nova-pricing": {
+        "tagline": "Pricing",
+        "title": "Clear pricing, no surprises",
+        "description": "Company websites have one simple yearly price. Everything else is scoped with you and priced before we start.",
+        "plans": [
+          {
+            "name": "Company website",
+            "price": "NPR 4,000",
+            "priceNote": "per year + domain cost",
+            "description": "A website designed and built around your business, then deployed and hosted by us.",
+            "features": [
+              "Designed and built to your needs",
+              "Deployment and hosting included",
+              "Fast on phones and desktops",
+              "Domain billed separately at cost"
+            ],
+            "ctaLabel": "Start your website",
+            "ctaHref": "#contact",
+            "highlighted": true
+          },
+          {
+            "name": "E-commerce, mobile and custom software",
+            "price": "Let's talk",
+            "priceNote": "",
+            "description": "Every product is different, so we agree the scope and a fixed price with you before any work begins.",
+            "features": [
+              "E-commerce apps",
+              "Android and iOS apps",
+              "Custom web apps and platforms",
+              "Hosting and maintenance options"
+            ],
+            "ctaLabel": "Discuss your project",
+            "ctaHref": "#contact",
+            "highlighted": false
+          }
+        ]
+      }
+    },
+    "footer": {
+      "eyebrow": "Have a project in mind?",
+      "heading": "Let's build it together",
+      "description": "Tell us what you need, whether it is a store, a website or a mobile app, and we will get back to you.",
+      "primaryLabel": "Get in touch",
+      "primaryHref": "#contact",
+      "secondaryLabel": "See our work",
+      "secondaryHref": "#work",
+      "legalLinks": [],
+      "footerLinks": [
+        {
+          "label": "Work",
+          "href": "#work"
+        },
+        {
+          "label": "Services",
+          "href": "#services"
+        },
+        {
+          "label": "Stack",
+          "href": "#stack"
+        },
+        {
+          "label": "Pricing",
+          "href": "#pricing"
+        },
+        {
+          "label": "Reviews",
+          "href": "#reviews"
+        }
+      ],
+      "ariaLegal": "Legal documents",
+      "ariaNavigation": "Footer navigation",
+      "copyright": "All rights reserved.",
+      "attributionPrefix": "Built on the Nova template by ",
+      "attributionLinkLabel": "WebScale",
+      "attributionLinkHref": "https://webscale.pl"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+# Sollari
+
+Sollari builds e-commerce apps, company portfolio websites, mobile apps and custom web platforms.
+
+## Stack
+
+Flutter, Kotlin Multiplatform (KMP), Rust, Next.js, React, Astro, Django.
+
+## Selected work
+
+- Door2Door, skincare e-commerce across Nepal: https://door2door.sollari.app/en/door2door-nepal
+- Oji International Language Center: https://ojiintl.com/
+- Asia Dialogue Initiative: https://asiacan.sollari.app/
+
+## Contact
+
+Use the contact form on the homepage: https://www.sollari.app/#contact
+
+## Pricing
+
+- Company websites: NPR 4,000 per year plus domain cost (built to your needs, deployed and hosted).
+- E-commerce, mobile and custom software: priced per project after agreeing the scope.
+
+Phone: +977 986-1311835

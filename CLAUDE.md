@@ -22,14 +22,16 @@ Multi-tenant hosting for small client websites. One Rust server (`server/`) and 
 ## Hard rules
 
 1. **Tenant isolation = one SQLite file per tenant.** Client content (site text, posts, sections, contact messages) lives in `tenants/<slug>.db`, reached only through `state.tenant_db(&tenant)` in handlers that take the `Tenant` / `Editor` extractor. Platform data (tenants, domains, billing, users, sessions, health) lives in the control DB `folio.db`, keyed by `tenant_id`. New client-content tables go in `server/migrations/tenant/`, and platform tables in `server/migrations/control/`.
-2. **ADI must look identical.** `sites/adi` was ported pixel-for-pixel from a React site. Don't restyle it unless asked. Its inline editor derives text keys from DOM position (`src/scripts/editor.ts`), so restructuring section markup orphans saved text edits. Keep the element structure unchanged.
-3. **door2door is off limits.** The VPS (163.223.98.6, SSH port 41447, root) also runs an unrelated production app, `door2door-*` containers. Never touch its containers, Docker network, Caddy config (`/opt/door2door-tenancy`), ports 80/443 or the firewall. Folio lives only in `/opt/folio`, `/srv/folio` and `/srv/sites`.
-4. **Ask before outward-facing actions:** deploys, DNS changes, editing anything on the VPS, and changing passwords. The user approves these one at a time.
-5. **No secrets in git.** `server/.env` and `sites/*/.env` are gitignored. Site `.env` holds only `PUBLIC_*` values. R2 keys belong to the server.
+2. **Reviews/testimonials:** only real people, with quotes they've approved. Never invent reviewers.
+3. **ADI must look identical.** `sites/adi` was ported pixel-for-pixel from a React site. Don't restyle it unless asked. Its inline editor derives text keys from DOM position (`src/scripts/editor.ts`), so restructuring section markup orphans saved text edits. Keep the element structure unchanged.
+4. **door2door is off limits.** The VPS (163.223.98.6, SSH port 41447, root) also runs an unrelated production app, `door2door-*` containers. Never touch its containers, Docker network, Caddy config (`/opt/door2door-tenancy`), ports 80/443 or the firewall. Folio lives only in `/opt/folio`, `/srv/folio` and `/srv/sites`.
+5. **Ask before outward-facing actions:** deploys, DNS changes, editing anything on the VPS, and changing passwords. The user approves these one at a time.
+6. **No secrets in git.** `server/.env` and `sites/*/.env` are gitignored. Site `.env` holds only `PUBLIC_*` values. R2 keys belong to the server.
 
 ## Production facts
 
-- Live: `asiacan.sollari.app` → tenant `adi`; `folio.sollari.app/admin` → owner admin.
+- Live: `asiacan.sollari.app` → tenant `adi`; `www.sollari.app` → tenant `sollari` (company site, Nova template); `folio.sollari.app/admin` → owner admin.
+- Tunnel ingress hosts (`/opt/folio/cloudflared/config.yml`): asiacan.sollari.app, folio.sollari.app, www.sollari.app, sollari.app. The apex `sollari.app` is a non-primary alias of tenant `sollari`, and Folio 308-redirects it to `https://www.sollari.app` (path kept). `mail.sollari.app` is door2door's mail server; don't touch it.
 - The VPS runs `/opt/folio/docker-compose.yml` with three services:
   - `folio-api`: the Rust image `folio:latest`, built on the VPS from `/opt/folio/src`.
   - `folio-web`: Caddy serving `/srv/sites/hosts/<host>`.

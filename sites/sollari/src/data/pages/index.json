@@ -1,0 +1,49 @@
+{
+  "seo": {
+    "title": "Sollari: e-commerce, company websites and mobile apps",
+    "description": "Sollari builds e-commerce apps, company portfolio websites and custom web and mobile apps with Flutter, Rust, KMP, Next.js, React, Astro and Django."
+  },
+  "heading": "Web and mobile apps built to last",
+  "sections": [
+    {
+      "id": "navbar",
+      "variant": "floating"
+    },
+    {
+      "id": "hero",
+      "variant": "nova"
+    },
+    {
+      "id": "portfolio",
+      "variant": "nova"
+    },
+    {
+      "id": "novaServices",
+      "variant": "default"
+    },
+    {
+      "id": "novaStack",
+      "variant": "default"
+    },
+    {
+      "id": "faq3",
+      "variant": "default"
+    },
+    {
+      "id": "testimonials",
+      "variant": "v2"
+    },
+    {
+      "id": "novaPricing",
+      "variant": "default"
+    },
+    {
+      "id": "contact",
+      "variant": "simple"
+    },
+    {
+      "id": "footer",
+      "variant": "nova"
+    }
+  ]
+}

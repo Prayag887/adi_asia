@@ -1,0 +1,34 @@
+{
+  "fullName": "Sollari",
+  "name": "Sollari",
+  "branding": {
+    "icon": "ph-sun",
+    "font": "Satoshi",
+    "tagline": "E-commerce, websites and mobile apps",
+    "logoImage": "",
+    "favicon": "/favicon.svg",
+    "logoSuffix": "Logo"
+  },
+  "address": "",
+  "zipCode": "",
+  "city": "",
+  "phone": "+977 986-1311835",
+  "email": "",
+  "hours": "",
+  "nip": "",
+  "krs": "",
+  "regon": "",
+  "siteUrl": "https://www.sollari.app",
+  "smtp": {
+    "smtpHost": "",
+    "smtpPort": 587,
+    "smtpUser": "",
+    "smtpPass": ""
+  },
+  "socials": {
+    "facebook": "",
+    "instagram": "",
+    "youtube": "",
+    "twitter": ""
+  }
+}

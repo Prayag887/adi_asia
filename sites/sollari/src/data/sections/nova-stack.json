@@ -1,0 +1,34 @@
+{
+  "title": "Our stack",
+  "description": "Proven tools, chosen per project, so what we build stays fast, secure and easy to maintain.",
+  "technologies": [
+    {
+      "name": "Flutter",
+      "icon": "siFlutter"
+    },
+    {
+      "name": "Kotlin Multiplatform",
+      "icon": "siKotlin"
+    },
+    {
+      "name": "Rust",
+      "icon": "siRust"
+    },
+    {
+      "name": "Next.js",
+      "icon": "siNextdotjs"
+    },
+    {
+      "name": "React",
+      "icon": "siReact"
+    },
+    {
+      "name": "Astro",
+      "icon": "siAstro"
+    },
+    {
+      "name": "Django",
+      "icon": "siDjango"
+    }
+  ]
+}

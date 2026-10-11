@@ -1,0 +1,108 @@
+{
+  "title": "Tell us about your project",
+  "description": "Share a few details about what you want to build. We read every message and reply personally.",
+  "mapUrl": "",
+  "email": "",
+  "address": "",
+  "social": {
+    "facebook": "",
+    "instagram": "",
+    "youtube": "",
+    "twitter": "",
+    "labels": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "youtube": "YouTube",
+      "twitter": "Twitter"
+    }
+  },
+  "formFields": [
+    {
+      "name": "name",
+      "label": "Name",
+      "type": "text",
+      "required": true,
+      "placeholder": "Your name",
+      "autoComplete": "name"
+    },
+    {
+      "name": "email",
+      "label": "Email",
+      "type": "email",
+      "required": true,
+      "placeholder": "you@company.com",
+      "autoComplete": "email"
+    },
+    {
+      "name": "phone",
+      "label": "Phone (optional)",
+      "type": "tel",
+      "required": false,
+      "placeholder": "+977 98XXXXXXXX",
+      "autoComplete": "tel"
+    },
+    {
+      "name": "subject",
+      "label": "What do you need?",
+      "type": "select",
+      "required": true,
+      "options": [
+        {
+          "value": "E-commerce app",
+          "label": "E-commerce app"
+        },
+        {
+          "value": "Company website",
+          "label": "Company or portfolio website"
+        },
+        {
+          "value": "Mobile app",
+          "label": "Mobile app"
+        },
+        {
+          "value": "Custom web app",
+          "label": "Custom web app or platform"
+        },
+        {
+          "value": "Other",
+          "label": "Something else"
+        }
+      ]
+    },
+    {
+      "name": "message",
+      "label": "Project details",
+      "type": "textarea",
+      "required": true,
+      "rows": 5,
+      "placeholder": "What are you building, and when do you need it?",
+      "autoComplete": "off"
+    }
+  ],
+  "rows": {
+    "labels": {
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "location": "Location"
+    }
+  },
+  "socialLabel": "Follow us",
+  "joinTeam": {
+    "paragraphs": [
+      "We only use your details to reply to your enquiry."
+    ]
+  },
+  "map": {
+    "openLabel": "Open in Google Maps",
+    "externalLabel": "Open a larger map in Google Maps",
+    "consentMessage": "The map loads after you consent to the external service.",
+    "cookieSettingsLabel": "Cookie settings"
+  },
+  "submitLabel": "Send message",
+  "submittingLabel": "Sending…",
+  "resetLabel": "Send another",
+  "successMessage": "Thank you! Your message has been sent and we will get back to you soon.",
+  "errorMessage": "Sorry, your message could not be sent. Please try again in a moment.",
+  "callLabel": "Prefer to talk? Call us at"
+}

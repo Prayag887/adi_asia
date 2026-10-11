@@ -1,0 +1,70 @@
+---
+// Why: Sollari pricing. Two plans: a fixed yearly price for company websites (highlighted)
+// and "let's talk" for everything else. Built from the template's own atoms and tokens so
+// it matches the rest of the page; copy comes from src/data/i18n/nova.json (nova-pricing).
+import Section from "@components/ui/layout/Section.astro";
+import Container from "@components/ui/layout/Container.astro";
+import Heading from "@components/ui/atoms/Heading.astro";
+import Text from "@components/ui/atoms/Text.astro";
+import Button from "@components/ui/atoms/Button.astro";
+import jsonData from "@data/sections/nova-pricing.json";
+import { ACTIVE_TEMPLATE } from "@config/template";
+
+interface Plan {
+  name: string;
+  price: string;
+  priceNote?: string;
+  description: string;
+  features: string[];
+  ctaLabel: string;
+  ctaHref: string;
+  highlighted?: boolean;
+}
+interface Props { tagline?: string; title?: string; description?: string; plans?: Plan[]; class?: string }
+
+const props = Astro.props as Props;
+const fallback = ACTIVE_TEMPLATE === "nova" ? undefined : jsonData;
+const tagline = props.tagline ?? fallback?.tagline;
+const title = props.title ?? fallback?.title;
+const description = props.description ?? fallback?.description;
+const plans: Plan[] = props.plans ?? fallback?.plans ?? [];
+---
+
+<Section id="pricing" tone="page" class:list={["py-16 md:py-24", props.class]}>
+  <Container>
+    <div class="mx-auto max-w-3xl text-center" data-motion-sequence="viewport" data-motion-profile="soft">
+      {tagline && <Text tag="p" variant="feature-body-sm" class="mb-3 font-semibold uppercase tracking-[0.18em] text-brand-accent">{tagline}</Text>}
+      <Heading tag="h2" variant="section-title">{title}</Heading>
+      {description && <Text variant="lead" class="mt-4">{description}</Text>}
+    </div>
+
+    <div class="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-2" data-motion-sequence="viewport" data-motion-profile="soft">
+      {plans.map((plan) => (
+        <article
+          class:list={[
+            "flex flex-col rounded-[var(--ui-radius-xl)] border p-8 md:p-10",
+            plan.highlighted ? "border-brand-dark bg-brand-dark text-brand-light shadow-xl" : "ui-bg-surface border-brand-dark/10",
+          ]}
+        >
+          <Heading tag="h3" variant="feature-title" class={plan.highlighted ? "text-brand-light" : ""}>{plan.name}</Heading>
+          <p class="mt-6 flex flex-wrap items-baseline gap-x-2">
+            <strong class:list={["text-4xl font-semibold tracking-tight md:text-5xl", plan.highlighted ? "text-brand-accent" : "text-brand-dark"]}>{plan.price}</strong>
+            {plan.priceNote && <span class:list={["text-base", plan.highlighted ? "text-brand-light/70" : "text-brand-dark/60"]}>{plan.priceNote}</span>}
+          </p>
+          <p class:list={["mt-4 leading-relaxed", plan.highlighted ? "text-brand-light/80" : "text-brand-dark/70"]}>{plan.description}</p>
+          <ul class="mt-6 grid list-none gap-3 p-0">
+            {plan.features.map((feature) => (
+              <li class="flex items-start gap-3">
+                <span class:list={["mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-sm", plan.highlighted ? "bg-brand-accent text-brand-dark" : "bg-brand-dark/10 text-brand-dark"]} aria-hidden="true">✓</span>
+                <span class={plan.highlighted ? "text-brand-light/90" : "text-brand-dark/80"}>{feature}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="mt-auto pt-8">
+            <Button href={plan.ctaHref} variant={plan.highlighted ? "accent" : "primary"} size="md" class="min-h-11 w-full">{plan.ctaLabel}</Button>
+          </div>
+        </article>
+      ))}
+    </div>
+  </Container>
+</Section>
