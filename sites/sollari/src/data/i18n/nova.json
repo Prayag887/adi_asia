@@ -302,9 +302,9 @@
       "ariaLegal": "Legal documents",
       "ariaNavigation": "Footer navigation",
       "copyright": "All rights reserved.",
-      "attributionPrefix": "Built on the Nova template by ",
-      "attributionLinkLabel": "WebScale",
-      "attributionLinkHref": "https://webscale.pl"
+      "attributionPrefix": "Built by ",
+      "attributionLinkLabel": "Sollari",
+      "attributionLinkHref": "https://www.sollari.app/"
     }
   }
 }

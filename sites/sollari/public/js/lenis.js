@@ -44,13 +44,18 @@
 
   function getAnchorTarget(hash) {
     if (!hash || hash === '#') return null;
-    return document.getElementById(decodeURIComponent(hash.slice(1)));
+    try {
+      return document.getElementById(decodeURIComponent(hash.slice(1)));
+    } catch (_error) {
+      return null;
+    }
   }
 
   function scrollToHash(hash, immediate) {
     var target = getAnchorTarget(hash);
     if (!target || !currentLenis) return false;
 
+    currentLenis.resize();
     currentLenis.scrollTo(target, {
       // Lenis already accounts for the target's CSS scroll-margin-top.
       duration: immediate || isReducedMotion ? 0 : 1.2,
@@ -150,16 +155,31 @@
     }
   }, true);
 
+  var anchorFrame = 0;
   document.addEventListener('click', function(event) {
-    var link = event.target.closest('a');
-    if (!link) return;
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey ||
+        event.ctrlKey || event.shiftKey || event.altKey) return;
+    var link = event.target.closest ? event.target.closest('a') : null;
+    if (!link || link.hasAttribute('download') ||
+        (link.target && link.target !== '_self')) return;
 
     var hash = getSameDocumentHash(link.getAttribute('href'));
-    if (!hash || !scrollToHash(hash, false)) return;
+    if (!hash || !getAnchorTarget(hash) || !currentLenis) return;
 
-    history.pushState(null, '', link.href);
+    // Capture before Astro's bubbling router listener so it cannot start a
+    // second navigation. Keep propagation so mobile drawer links still close.
     event.preventDefault();
-  });
+    if (window.location.hash !== hash) history.pushState(null, '', link.href);
+    if (anchorFrame) cancelAnimationFrame(anchorFrame);
+    anchorFrame = requestAnimationFrame(function() {
+      anchorFrame = 0;
+      // Drawer close handlers have now restored body scrolling.
+      scrollToHash(hash, false);
+    });
+  }, true);
+
+  window.addEventListener('popstate', scheduleAnchorScroll);
+  window.addEventListener('hashchange', scheduleAnchorScroll);
 
   document.addEventListener('astro:before-swap', function() {
     // Stop the animation loop and destroy Lenis before Astro swaps the DOM,
